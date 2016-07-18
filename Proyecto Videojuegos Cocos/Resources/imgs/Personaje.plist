@@ -1,0 +1,555 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>Run (1).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,0},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Run (2).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{567,0},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Run (3).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1134,0},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Run (4).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1701,0},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Run (5).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2268,0},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Run (6).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2835,0},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Run (7).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{3402,0},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Run (8).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,556},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (01).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,1123},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (02).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,1690},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (03).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,2257},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (04).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,2824},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (05).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{0,3391},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (06).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{556,556},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (07).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1123,556},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (08).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1690,556},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (09).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2257,556},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Slide (10).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2824,556},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (01).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{3391,556},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (02).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{556,1112},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (03).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{556,1679},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (04).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{556,2246},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (05).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{556,2813},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (06).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{556,3380},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (07).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1112,1112},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (08).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1679,1112},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (09).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2246,1112},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Jump (10).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2813,1112},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (1).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{3380,1112},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (10).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1112,1668},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (2).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1112,2235},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (3).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1112,2802},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (4).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1112,3369},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (5).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1668,1668},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (6).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2235,1668},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (7).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2802,1668},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (8).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{3369,1668},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Idle (9).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1668,2224},{567,556}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{567,556}</string>
+			</dict>
+			<key>Dead (01).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1668,2791},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (02).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{1668,3353},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (03).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2187,2791},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (04).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2224,2224},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (05).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2187,3353},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (06).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2706,2786},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (07).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2743,2224},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (08).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{2706,3348},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (09).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{3225,2786},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<false />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+			<key>Dead (10).png</key>
+			<dict>
+				<key>frame</key>
+				<string>{{3262,2224},{562,519}}</string>
+				<key>offset</key>
+				<string>{0,0}</string>
+				<key>rotated</key>
+				<true />
+				<key>sourceSize</key>
+				<string>{562,519}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>2</integer>
+			<key>textureFileName</key>
+			<string>Personaje.png</string>
+			<key>realTextureFileName</key>
+			<string>Personaje.png</string>
+			<key>size</key>
+			<string>{4096,4096}</string>
+		</dict>
+		<key>texture</key>
+		<dict>
+			<key>width</key>
+			<integer>4096</integer>
+			<key>height</key>
+			<integer>4096</integer>
+		</dict>
+	</dict>
+</plist>
