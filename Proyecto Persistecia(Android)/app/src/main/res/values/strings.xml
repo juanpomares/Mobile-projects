@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Persistencia: Content Provider</string>
+    <string name="NOMBREBASEDATOS">BaseDatosNombre</string>
+    <string name="NOMBREBASEDATOSDEFAULT">MiBaseDeDatos</string>
+    <string name="VERSIONBASEDATOS">VersionDatosNombre</string>
+    <integer name="VERSIONBASEDATOSDEFAULT">1</integer>
+    <string name="LOCALIZACIONFICHEROS">FicheroLoc</string>
+    <bool name="LOCALIZACIONFICHEROSDEFAULT">false</bool>
+    <string name="TELEFONODOSPASOS">TelefonoVerificacion</string>
+    <string name="TELEFONODOSPASOSDEFAULT">666777888</string>
+</resources>

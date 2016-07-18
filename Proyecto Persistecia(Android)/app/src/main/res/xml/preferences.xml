@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+            android:key="@string/NOMBREBASEDATOS"
+            android:title="Nombre base de datos"
+            android:summary="Indica el nombre de la base de datos"
+            android:dialogTitle="Nombre base datos"
+            android:defaultValue="@string/NOMBREBASEDATOSDEFAULT"
+            android:singleLine="true"
+            />
+    <EditTextPreference
+        android:key="@string/VERSIONBASEDATOS"
+        android:title="Versión Base Datos"
+        android:summary="Indica la versión de la base de datos"
+        android:dialogTitle="Versión base de datos"
+        android:defaultValue="@integer/VERSIONBASEDATOSDEFAULT"
+        android:inputType="number"
+        android:numeric="integer"
+        android:singleLine="true"
+        />
+    <EditTextPreference
+        android:key="@string/TELEFONODOSPASOS"
+        android:title="Télefono verificación"
+        android:summary="Indica el telefono desde el que se recibe el SMS"
+        android:dialogTitle="Télefono de verificación"
+        android:defaultValue="@string/TELEFONODOSPASOSDEFAULT"
+        android:singleLine="true"
+        />
+    <CheckBoxPreference
+        android:key="@string/LOCALIZACIONFICHEROS"
+        android:title="Backups en SD"
+        android:summary="Indica si los ficheros se guardan en la tarjeta SD o en el teléfono"
+        android:defaultValue="@bool/LOCALIZACIONFICHEROSDEFAULT"
+        />
+</PreferenceScreen>

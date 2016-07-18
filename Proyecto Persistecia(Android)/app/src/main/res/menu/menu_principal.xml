@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/action_CrearBackup"
+        android:title="Crear Backup"/>
+    <item android:id="@+id/action_RestaurarBackup"
+        android:title="Restaurar Backup"/>
+    <item android:id="@+id/action_GestionUsuarios"
+        android:title="Gestión de Usuarios"/>
+    <item android:id="@+id/action_Configuracion"
+        android:title="Configuración"/>
+</menu>
