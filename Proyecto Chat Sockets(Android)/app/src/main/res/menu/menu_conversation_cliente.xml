@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:name="Menú Cliente"
+    >
+    <item
+        android:icon="@android:drawable/ic_menu_camera"
+        android:id="@+id/MenuSendArchivo"
+        android:title="Arc"
+        app:showAsAction="always">
+        <!--android:icon="@drawable/elemento_menu"-->
+    </item>
+
+
+</menu>

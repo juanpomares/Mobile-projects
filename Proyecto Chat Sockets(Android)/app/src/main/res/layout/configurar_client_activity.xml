@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.ua.juanchema.mastermoviles.tdam.proyectofinalsockets.ConfigureClient">
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Let&apos;s da Juasap"
+        android:id="@+id/inicio_cliente_conectarButton"
+        android:onClick="inicio_clienteAbreConexion"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Escribe los datos del servidor"
+        android:id="@+id/inicio_cliente_TV_titulo"
+        android:layout_alignParentTop="true"
+        android:textColor="#00095c"
+        android:textSize="25dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dirección IP"
+        android:id="@+id/inicio_cliente_TV_info1"
+        android:layout_below="@+id/inicio_cliente_TV_titulo"
+        android:layout_marginTop="25dp"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inicio_cliente_ET_direccionIP"
+        android:layout_below="@+id/inicio_cliente_TV_info1"
+        android:hint="192.168.1.2"
+        android:lines="1"
+        android:singleLine="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Puerto"
+        android:id="@+id/inicio_cliente_TV_info2"
+        android:layout_below="@+id/inicio_cliente_ET_direccionIP"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:lines="1"
+        android:singleLine="true"
+        android:id="@+id/inicio_cliente_ET_Puerto"
+        android:layout_below="@+id/inicio_cliente_TV_info2"
+        android:textAlignment="center"
+        android:hint="8080"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Personaliza tu Conversation"
+        android:id="@+id/inicio_cliente_TV_infouser"
+        android:textSize="25dp"
+        android:textColor="#00095c"
+        android:textAlignment="center"
+        android:layout_below="@+id/inicio_cliente_ET_Puerto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tu nombre"
+        android:id="@+id/inicio_cliente_TV_nombreuser"
+        android:layout_below="@+id/inicio_cliente_TV_infouser"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inicio_cliente_ET_nombreUsuario"
+        android:lines="1"
+        android:singleLine="true"
+        android:layout_below="@+id/inicio_cliente_TV_nombreuser"
+        android:hint="Da Homa"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textAlignment="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fondo de Conversacion"
+        android:id="@+id/inicio_cliente_TV_infofondo"
+        android:layout_below="@+id/inicio_cliente_ET_nombreUsuario"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/inicio_cliente_spinner_fondo"
+        android:layout_below="@+id/inicio_cliente_TV_infofondo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+
+</RelativeLayout>

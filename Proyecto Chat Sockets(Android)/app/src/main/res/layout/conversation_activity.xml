@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/imageView"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_below="@+id/button"
+            android:id="@+id/scrollView">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/ListaMensajes"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"/>
+        </ScrollView>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@drawable/fondo_input"
+            >
+            <EditText
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:padding="5dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/EditTextMensaje"/>
+
+            <ImageButton
+                android:background="@android:drawable/ic_menu_send"
+                android:backgroundTint="@android:color/holo_blue_light"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:onClick="EnviarMensaje"  />
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
