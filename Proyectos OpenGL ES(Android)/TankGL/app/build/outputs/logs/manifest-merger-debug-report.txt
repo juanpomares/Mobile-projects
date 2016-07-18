@@ -1,0 +1,55 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:2:1-29:12
+	package
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:3:5-35
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+	android:versionName
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:6:5-30
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+	android:versionCode
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:5:5-28
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:2:11-69
+uses-sdk
+ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:8:5-10:41
+MERGED from [com.android.support:appcompat-v7:19.1.0] /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/19.1.0/AndroidManifest.xml:18:5-42
+	android:targetSdkVersion
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:10:9-38
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:9:9-35
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml
+application
+ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:12:5-27:19
+MERGED from [com.android.support:appcompat-v7:19.1.0] /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/19.1.0/AndroidManifest.xml:19:5-20
+	android:label
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:15:9-41
+	android:allowBackup
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:13:9-35
+	android:icon
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:14:9-45
+	android:theme
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:16:9-50
+activity#com.opengl10.android.OpenGLActivity
+ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:18:9-26:20
+	android:label
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:20:13-45
+	android:name
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:19:13-63
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:21:13-25:29
+action#android.intent.action.MAIN
+ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:22:17-69
+	android:name
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:22:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:24:17-77
+	android:name
+		ADDED from /Users/mastermoviles/Dropbox/Entregas Master/Gráficos y multimedia/TankGL/app/src/main/AndroidManifest.xml:24:27-74

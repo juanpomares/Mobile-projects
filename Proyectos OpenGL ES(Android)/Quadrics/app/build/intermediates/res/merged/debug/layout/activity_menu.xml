@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.opengl4.android.MenuActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Esfera"
+        android:textSize="25dp"
+        android:layout_marginTop="20dp"
+        android:onClick="crearCuadrica"
+        android:id="@+id/buttonEsfera"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toroide"
+        android:layout_below="@+id/buttonEsfera"
+        android:textSize="25dp"
+        android:layout_marginTop="20dp"
+        android:onClick="crearCuadrica"
+        android:id="@+id/buttonToroide"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Supercuádrica"
+        android:layout_below="@+id/buttonToroide"
+        android:textSize="25dp"
+        android:layout_marginTop="20dp"
+        android:onClick="crearCuadrica"
+        android:id="@+id/buttonSuper"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Juan Pomares Bernabeu"/>
+
+</RelativeLayout>
+<!-- From: file:/Users/mastermoviles/Dropbox/Entregas%20Master/Gráficos%20y%20multimedia/Quadrics/app/src/main/res/layout/activity_menu.xml -->
