@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Connection Wear</string>
+
+
+    <string-array name="AvailableViews">
+        <item>Simple TextView</item>
+        <item>Vertical Control with Central Button</item>
+        <item>Vertical Control without Central Button</item>
+        <item>Pad with Central Button</item>
+        <item>Pad without Central Button</item>
+        <item>Vertical Control with Central Button</item>
+        <item>Vertical Control without Central Button</item>
+        <item>Virtual Joystick</item>
+    </string-array>
+
+</resources>
