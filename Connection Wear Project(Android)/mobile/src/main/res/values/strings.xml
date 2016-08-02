@@ -4,8 +4,8 @@
 
     <string-array name="AvailableViews">
         <item>Simple TextView</item>
-        <item>Vertical Control with Central Button</item>
-        <item>Vertical Control without Central Button</item>
+        <item>Horizontal Control with Central Button</item>
+        <item>Horizontal Control without Central Button</item>
         <item>Pad with Central Button</item>
         <item>Pad without Central Button</item>
         <item>Vertical Control with Central Button</item>

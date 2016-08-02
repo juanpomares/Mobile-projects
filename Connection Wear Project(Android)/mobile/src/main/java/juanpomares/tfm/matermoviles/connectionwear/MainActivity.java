@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.MessageEvent;
 import com.google.android.gms.wearable.Node;
@@ -21,6 +22,7 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 
 
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         {
             mActualView=newinterface;
 
-            sendMessage(PublicConstants.CHANGE_LAYOUT, newinterface);
+            sendMessageSync(PublicConstants.CHANGE_LAYOUT, newinterface);
             if(newinterface.contains("Button"))
             {
                 findViewById(R.id.posicionjoystick).setVisibility(View.GONE);
@@ -169,10 +171,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         for(int i=0; i<3; i++)
         {
             String Val="X";
-            if(i==1)
-                Val="Y";
-            else
-                Val="Z";
+            switch(i)
+            {
+                case 1:
+                    Val="Y";
+                    break;
+                case 2:
+                    Val="Z";
+                    break;
+            }
+
             orientationvalues[i].setText(Val+": "+mGyroscopeValues[i] + "");
         }
         for(int i=0; i<2; i++)
@@ -188,16 +196,44 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mWearableID=list.get(0).getId();
     }
 
-    private class SendMessageThread extends Thread
+    private class SendMessage_Thread extends Thread
     {
-        String path;
-        String text;
+        protected String Path;
+        protected ByteBuffer Buff;
+        protected PendingResult<MessageApi.SendMessageResult> PendingResultSend;
 
 
-        SendMessageThread(String pth, String txt)
+        SendMessage_Thread(String pth, ByteBuffer bff)
         {
-            path=pth;
-            text=txt;
+            Path=pth;
+            Buff=bff;
+        }
+
+        SendMessage_Thread(String pth, String buffer)
+        {
+            Path=pth;
+            Buff=ByteBuffer.allocate(buffer.length());
+            Buff.put(buffer.getBytes());
+        }
+
+        public void run()
+        {
+            if (mWearableID == "") {
+                AddTextInterface("No smartwatch Connected!! :0");
+            } else
+            {
+                Log.d("MessageSend", "P: " + Path + " " + new String(Buff.array()));
+                PendingResultSend = Wearable.MessageApi.sendMessage(mApiClient, mWearableID, Path, Buff.array());
+            }
+        }
+    }
+
+    private class SendMessageThreadAwait extends SendMessage_Thread
+    {
+        SendMessageThreadAwait(String pth, ByteBuffer bff){  super(pth, bff); }
+        SendMessageThreadAwait(String pth, String buffer)
+        {
+            super(pth, buffer);
         }
 
         public void run()
@@ -205,26 +241,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (mWearableID == "")
                 getMWearable();
 
-            if (mWearableID == "") {
-                AddTextInterface("No smartwatch Connected!! :0");
-            } else {
-                MessageApi.SendMessageResult result = Wearable.MessageApi.sendMessage(mApiClient, mWearableID, path, text.getBytes()).await();
+            super.run();
 
-                if (!result.getStatus().isSuccess())
-                    Log.d("SendMessage", "Message not send properly :(");
-
-                if (text.equals("disconnect"))
-                    DisconnectWear();
-            }
+            MessageApi.SendMessageResult result =PendingResultSend.await();
+            if (!result.getStatus().isSuccess())
+                Log.e("sendMessage", "ERROR: failed to send Message: " + result.getStatus());
         }
-
     }
 
-    private void sendMessage( String path, String text ) {
+
+
+    private void sendMessageAsync( String path, String text ) {
         if (mConnectedWearable!=0 || path.equals(PublicConstants.START_ACTIVITY))
         {
             AddTextInterface("sendMessage P:"+path+" T:"+text);
-            new SendMessageThread(path, text).start();
+            new SendMessage_Thread(path, text).run();
+        }
+    }
+
+    private void sendMessageSync( String path, String text ) {
+        if (mConnectedWearable!=0 || path.equals(PublicConstants.START_ACTIVITY))
+        {
+            AddTextInterface("sendMessage P:"+path+" T:"+text);
+            new SendMessageThreadAwait(path, text).start();
         }
     }
 
@@ -259,10 +298,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if(mReconnectWearable)
         {
             if (mSensorActivated)
-                sendMessage(PublicConstants.ACTIVE_SENSORS, "Orientation");
+                sendMessageSync(PublicConstants.ACTIVE_SENSORS, "Orientation");
 
             if (mActualView != null)
-                sendMessage(PublicConstants.CHANGE_LAYOUT, mActualView);
+                sendMessageSync(PublicConstants.CHANGE_LAYOUT, mActualView);
 
             mReconnectWearable = false;
         }
@@ -324,12 +363,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 mConnectedWearable = 1;
                 connectedWear.setText("TRUE");
 
-                sendMessage("Okay", "jeje");
+                sendMessageSync("Okay", "jeje");
                 AddTextInterface("SmartWatch connected!! :)", true);
 
                 if(mReconnectWearable)
                     ReConnection();
 
+                break;
+
+            default:
+                Log.d("onMessageReceived", "Default :0");
                 break;
         }
     }
@@ -338,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onDestroy()
     {
         if(mConnectedWearable==1)
-            sendMessage(PublicConstants.STOP_ACTIVITY, "");
+            sendMessageAsync(PublicConstants.STOP_ACTIVITY, "");
 
         DisconnectWear();
         super.onDestroy();
@@ -347,13 +390,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void OpenWearableApp(View v)
     {
         mReconnectWearable=true;
-        sendMessage(PublicConstants.START_ACTIVITY, "");
+        sendMessageSync(PublicConstants.START_ACTIVITY, "");
     }
 
     public void CloseWearableApp(View v)
     {
+        sendMessageSync(PublicConstants.STOP_ACTIVITY, "");
+        mConnectedWearable=0;
         mReconnectWearable=true;
-        sendMessage(PublicConstants.STOP_ACTIVITY, "");
         connectedWear.setText("FALSE");
     }
 
@@ -362,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if(!mSensorActivated)
         {
             mSensorActivated = true;
-            sendMessage(PublicConstants.ACTIVE_SENSORS, "");
+            sendMessageSync(PublicConstants.ACTIVE_SENSORS, "");
 
             for(int i=0; i<3; i++)
                 orientationvalues[i].setVisibility(View.VISIBLE);
@@ -375,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if(mSensorActivated)
         {
             mSensorActivated = false;
-            sendMessage(PublicConstants.DEACTIVE_SENSORS, "");
+            sendMessageSync(PublicConstants.DEACTIVE_SENSORS, "");
             for(int i=0; i<3; i++)
                 orientationvalues[i].setVisibility(View.GONE);
         }
@@ -387,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     {
         Wearable.MessageApi.addListener(mApiClient, this);
         WearableApiListener=true;
-        sendMessage(PublicConstants.START_ACTIVITY, "");
+        sendMessageSync(PublicConstants.START_ACTIVITY, "");
         AddTextInterface("Sended START_ACTIVITY command");
     }
 

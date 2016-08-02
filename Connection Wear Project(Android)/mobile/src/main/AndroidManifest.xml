@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.example.juan_.pruebainterfaces"
+        <meta-data android:name="juanpomares.tfm.matermoviles.connectionwear"
             android:resource="@xml/wearable_app_desc"/>
 
         <activity android:name=".MainActivity">

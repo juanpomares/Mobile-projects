@@ -1,5 +1,5 @@
 <wearableApp package="juanpomares.tfm.matermoviles.connectionwear">
-  <versionCode>1</versionCode>
+  <versionCode>3</versionCode>
   <versionName>1.0</versionName>
   <rawPathResId>wearable_app</rawPathResId> 
 </wearableApp>

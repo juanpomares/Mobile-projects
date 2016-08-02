@@ -87,7 +87,7 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                     if(SensorManager.getRotationMatrix(R, null, mGravity, mGeoMagentic))
                     {
                         SensorManager.getOrientation(R, orientation);
-                        sendMessageAsync(PublicConstants.GYROSCOPE_VALUES, orientation[0] + "#" + orientation[1] + "#" + orientation[2]);
+                        sendMessageWithStart(PublicConstants.GYROSCOPE_VALUES, orientation[0] + "#" + orientation[1] + "#" + orientation[2]);
                         mLastOrientationSent=System.currentTimeMillis();
                     }
                 }
@@ -119,27 +119,30 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
     @Override
     protected void onStop()
     {
-        super.onStop();
 
+        super.onStop();
         DeactiveSensors();
         Log.d("onStop", "...");
-        if(mMustNotifyDestroy && mWearableMessageApi && mApiClient.isConnected())
+
+        if(mApiClient.isConnected())
         {
-            mMustNotifyDestroy=false;
-            sendMessageWithCloseApp(PublicConstants.DISCONNECTION, "Bye :)");
-            Log.d("onStop", "send disconnected wear");
-        }else {
-            Log.d("onStop", "else send disconnected wear");
+            if(mMustNotifyDestroy)
+            {
+                mMustNotifyDestroy=false;
+                sendMessageWithCloseApp(PublicConstants.DISCONNECTION, "Bye :)");
+                Log.d("onStop", "send disconnected wear");
+            }
+
 
             if (mWearableMessageApi)
             {
-                Wearable.MessageApi.removeListener(mApiClient, this);
+                Wearable.MessageApi.removeListener(mApiClient, MainActivity.this);
                 mWearableMessageApi = false;
             }
             mApiClient.disconnect();
         }
-
         AppSharedPreferences.setAppOpen(this, false);
+        this.finish();
     }
 
     private void initGoogleApiClient()
@@ -151,6 +154,12 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                 .build();
 
         mApiClient.connect();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("onDestroy", "...");
     }
 
     @Override
@@ -175,7 +184,8 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                 }
                 else
                 {
-                    sendMessageAsync(PublicConstants.CONNECTION_WEAR, "");
+                    mMustNotifyDestroy=true;
+                    sendMessageWithRun(PublicConstants.CONNECTION_WEAR, "");
                 }
             }
         });
@@ -274,29 +284,33 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                 break;
 
             case PublicConstants.START_ACTIVITY:
-                sendMessageAsync(PublicConstants.CONNECTION_WEAR, "");
+                mMustNotifyDestroy=true;
+                sendMessageWithRun(PublicConstants.CONNECTION_WEAR, "");
                 break;
 
-            default:
+            case "Okay":
                 TextView aux=((TextView)findViewById(R.id.text));
                 if(aux!=null)
                     aux.setText("Connection established!!");
+
+                break;
+
+            default:
                 Log.d("onMessageReceived", "Default Message");
                 break;
         }
     }
 
 
-    public void sendMessageAsync(String path, String buffer)
+    public void sendMessageWithStart(String path, String buffer)
     {
         if(mTelephone !=null)
         {
             (new SendMessage_Thread(path, buffer)).start();
-        }else
-            Log.d("sendMessageAsync", "mTelepohone is Null");
+        }
     }
 
-    public void sendMessageSync(String path, String buffer)
+    public void sendMessageWithRun(String path, String buffer)
     {
         if(mTelephone !=null)
         {
@@ -305,14 +319,14 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
     }
 
 
-    public void sendMessageSync(String path, ByteBuffer buffer)
+    public void sendMessageWithRun(String path, ByteBuffer buffer)
     {
         if(mTelephone !=null)
         {
             (new SendMessage_Thread(path, buffer)).run();
         }
     }
-    public void sendMessageAsync(String path, ByteBuffer buffer)
+    public void sendMessageWithStart(String path, ByteBuffer buffer)
     {
         if(mTelephone !=null)
         {
@@ -325,12 +339,16 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
     {
         if(mTelephone !=null)
         {
-            (new SendMessage_Thread(path, buffer)).run();
+            sendMessageWithRun(path, buffer);
 
+            Log.d("sendwithClose", "llamado al send");
             Wearable.MessageApi.removeListener(mApiClient, MainActivity.this);
             mWearableMessageApi=false;
+
+            Log.d("sendwithClose", "llamando al disconnect");
             mApiClient.disconnect();
-            this.finish();
+
+            Log.d("sendwithClose", "llamado al disconnect");
         }
     }
 
@@ -383,13 +401,13 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
     @Override
     public void onButtonPress(ButtonName pressed)
     {
-        sendMessageAsync(PublicConstants.BUTTON_PRESS, PublicConstants.BUTTONS_NAME[pressed.ordinal()]);
+        sendMessageWithStart(PublicConstants.BUTTON_PRESS, PublicConstants.BUTTONS_NAME[pressed.ordinal()]);
     }
 
     @Override
     public void onButtonHold(ButtonName released) {
 
-        sendMessageAsync(PublicConstants.BUTTON_RELEASE, PublicConstants.BUTTONS_NAME[released.ordinal()]);
+        sendMessageWithStart(PublicConstants.BUTTON_RELEASE, PublicConstants.BUTTONS_NAME[released.ordinal()]);
     }
 
     @Override
@@ -407,7 +425,6 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
             {   /*Log.d("onPositionChange", "No envio info :)");*/ return;}
 
         last_joystick_send=System.currentTimeMillis();
-        sendMessageSync(PublicConstants.JOYSTICK_VALUES, newX+"#"+newY);
-
+        sendMessageWithStart(PublicConstants.JOYSTICK_VALUES, newX+"#"+newY);
     }
 }

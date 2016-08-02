@@ -102,9 +102,9 @@ public class VistaJoystick extends View
         canvas.drawCircle(x, y, RADIO/1.5f, paint2);
 
 
-        paint.setColor(Color.RED);
+        /*paint.setColor(Color.RED);
         canvas.drawLine(0, heightmedio, width, heightmedio, paint);
-        canvas.drawLine(widthmedio, 0, widthmedio, height, paint);
+        canvas.drawLine(widthmedio, 0, widthmedio, height, paint);*/
 
     }
 
