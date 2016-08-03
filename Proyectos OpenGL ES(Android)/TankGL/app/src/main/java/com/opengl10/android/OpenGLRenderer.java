@@ -67,37 +67,29 @@ public class OpenGLRenderer implements Renderer
 	private float[] viewMatrix = new float[16];
 	private final float[] projectionviewMatrix = new float[16];
 
-	Tanketor tanque;
-	//Tobject decoracion[];
-	Tobject suelo;
-	TTriangles triangulos;
-	TCamera camara;
+	Tanketor mTank;
+	Tobject mFloor;
+	TTriangles mTriangules;
+	TCamera mCamera;
 
 	public OpenGLRenderer(Context context, float distancia_inicial)
 	{
 		this.context=context;
 
-		//TODO Crear objetos
-		tanque=new Tanketor(this);
+		mTank =new Tanketor(this);
+		mTriangules =new TTriangles();
 
-		triangulos=new TTriangles();
 
-		//decoracion=new Tobject[1];
-		/*decoracion[0]=new Tobject(this, R.raw.torus, R.drawable.mono_tex);
-		decoracion[0].setPosition(0, 0, -20);
-	coracion[1]=new Tobject(this, R.raw.torus, R.drawable.mono_tex);
-		decoracion[1].setPosition(0, 0, 20);*/
+		mFloor =new Tobject(this, R.raw.floor2, R.drawable.grass);
 
-		suelo=new Tobject(this, R.raw.suelo2, R.drawable.grass);
+		mCamera =new TCamera();
+		mCamera.setLookPoint(0, 0, 0);
+		mCamera.setCameraPosition(0, 5, -10);
 
-		camara=new TCamera();
-		camara.setPuntoAMirar(0, 0, 0);
-		camara.setPuntoDondeMirar(0, 5, -10);
+		mCamera.setDistance(distancia_inicial);
+		mCamera.setCameraRotation(0, -20);
 
-		camara.setDistancia(distancia_inicial);
-		camara.setRotacion(0, -20);
-
-		viewMatrix=camara.getViewmatrix();
+		viewMatrix= mCamera.getViewmatrix();
 	}
 
 	public Context getContext(){return context;}
@@ -113,12 +105,12 @@ public class OpenGLRenderer implements Renderer
 		int[]	maxVertexTextureImageUnits = new int[1];
 		int[]	maxTextureImageUnits       = new int[1];
 			
-		// Comprobamos si soporta texturas en el vertex shader
+		// Check if it supports textures (vertex shader)
 		glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, maxVertexTextureImageUnits, 0);
 		if (LoggerConfig.ON) {
 			Log.w(TAG, "Max. Vertex Texture Image Units: "+maxVertexTextureImageUnits[0]);
 		}
-		// Comprobamos si soporta texturas (en el fragment shader)
+		// Check if it supports textures (fragment shader)
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, maxTextureImageUnits, 0);
 		if (LoggerConfig.ON) {
 			Log.w(TAG, "Max. Texture Image Units: "+maxTextureImageUnits[0]);
@@ -127,59 +119,46 @@ public class OpenGLRenderer implements Renderer
 		int vertexShader, fragmentShader;
 
 
-		//Cargamos Shader Simple para triangulos
-		vertexShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.triangulos_vertex_shader);
-		fragmentShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.triangulos_fragment_shader);
+		//Load Simple Triangle Shader
+		vertexShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.shader_vertex_triangles);
+		fragmentShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.shader_fragment_triangles);
 
-		// Compilamos los shaders
+		// Compile the shaders
 		vertexShader = ShaderHelper.compileVertexShader(vertexShaderSource);
 		fragmentShader = ShaderHelper.compileFragmentShader(fragmentShaderSource);
 
-		// Enlazamos el programa OpenGL
+		// Linking the program OpenGL
 		programSimple = ShaderHelper.linkProgram(vertexShader, fragmentShader);
 
-		// En depuración validamos el programa OpenGL
+		// Validation of the OpenGL program
 		if (LoggerConfig.ON) {	ShaderHelper.validateProgram(programSimple);}
-		// Activamos el programa OpenGL
+		// Enabling OpenGl program
 		glUseProgram(programSimple);
 
-		// Capturamos el attribute a_Position
+
 		aSimpleColorLocation = glGetAttribLocation(programSimple, A_COLOR);
 		glEnableVertexAttribArray(aSimpleColorLocation);
 		aSimplePositionLocation = glGetAttribLocation(programSimple, A_POSITION);
 		glEnableVertexAttribArray(aSimplePositionLocation);
 
 
+		vertexShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.shader_vertex_models);
+		fragmentShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.shader_fragment_models);
 
-
-		/*Cargamos shader Specular*/
-		// Leemos los shaders
-		/*if (maxVertexTextureImageUnits[0]>0) {
-			// Textura soportada en el vertex shader
-			vertexShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.specular_vertex_shader);
-			fragmentShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.specular_fragment_shader);
-		} else
-		{*/
-			//Log.d("onSurfaceCreated", "Textura no soportada en el VertexShader");
-			// Textura no soportada en el vertex shader
-			vertexShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.modelos_vertex_shader);
-			fragmentShaderSource = TextResourceReader.readTextFileFromResource(context, R.raw.modelos_fragment_shader);
-		//}
 		
-		// Compilamos los shaders
+		// Compiling the shaders
 		vertexShader = ShaderHelper.compileVertexShader(vertexShaderSource);
 		fragmentShader = ShaderHelper.compileFragmentShader(fragmentShaderSource);
-		
-		// Enlazamos el programa OpenGL
+
+		// Linking the program OpenGL
 		programTextureSpecular = ShaderHelper.linkProgram(vertexShader, fragmentShader);
-		
-		// En depuraci�n validamos el programa OpenGL
+
+		// Validation of the OpenGL program
 		if (LoggerConfig.ON) {	ShaderHelper.validateProgram(programTextureSpecular);}
 
 		glUseProgram(programTextureSpecular);
 
-		
-		// Capturamos los uniforms
+
 		uMVPMatrixLocation = glGetUniformLocation(programTextureSpecular, U_MVPMATRIX);
 		uMVMatrixLocation = glGetUniformLocation(programTextureSpecular, U_MVMATRIX);
 		uColorLocation = glGetUniformLocation(programTextureSpecular, U_COLOR);
@@ -187,7 +166,6 @@ public class OpenGLRenderer implements Renderer
 		uLightsLocation=glGetUniformLocation(programTextureSpecular, U_LIGHTS);
 
 
-		// Capturamos los attributes
 		aSpecularPositionLocation = glGetAttribLocation(programTextureSpecular, A_POSITION);
 		glEnableVertexAttribArray(aSpecularPositionLocation);
 		aNormalLocation = glGetAttribLocation(programTextureSpecular, A_NORMAL);
@@ -202,19 +180,19 @@ public class OpenGLRenderer implements Renderer
 
 	private void NotificarSurfaceCreatedObjects()
 	{
-		triangulos.onSurfaceCreate(this);
-		tanque.onSurfaceCreated();
+		mTriangules.onSurfaceCreate(this);
+		mTank.onSurfaceCreated();
 
 		/*for(int i=0; i<decoracion.length; i++)
 			decoracion[i].onSurfaceCreated();*/
-		suelo.onSurfaceCreated();
+		mFloor.onSurfaceCreated();
 	}
 
 
 	void frustum(float[] m, int offset, float l, float r, float b, float t, float n, float f)
 	{
 		frustumM(m, offset, l, r, b, t, n, f);
-		// Correcci�n del bug de Android
+		// Android Bug fixed
 		m[8] /= 2;
 	}
 
@@ -287,7 +265,7 @@ public class OpenGLRenderer implements Renderer
 
 	@Override
 	public void onSurfaceChanged(GL10 glUnused, int width, int height) {
-		// Establecer el viewport de  OpenGL para ocupar toda la superficie.
+		// Establishing the OpenGL viewport to fill the surface.
 		glViewport(0, 0, width, height);
 		final float aspectRatio = width > height ?
 				(float) width / (float) height :
@@ -304,13 +282,13 @@ public class OpenGLRenderer implements Renderer
 				//frustum(projectionMatrix, 0, -TAM, TAM, -aspectRatio*TAM, aspectRatio*TAM, 1f, 1000.0f);
 		}
 
-		calcularProjectionViewMatrix();
+		calculateProjectionViewMatrix();
 	}
 
 
-	private void calcularProjectionViewMatrix()
+	private void calculateProjectionViewMatrix()
 	{
-		viewMatrix=camara.getViewmatrix();
+		viewMatrix= mCamera.getViewmatrix();
 		multiplyMM(projectionviewMatrix, 0, projectionMatrix, 0, viewMatrix, 0);
 	}
 
@@ -332,101 +310,64 @@ public class OpenGLRenderer implements Renderer
 
 
 
-		// Activamos el programa OpenGL
+		// Enabling OpenGL program
 		glUseProgram(programTextureSpecular);
 
 
-		//glUniform1i(uLightsLocation, 0);
-		suelo.draw(projectionviewMatrix);
+		mFloor.draw(projectionviewMatrix);
 
 		glUniform1i(uLightsLocation, 1);
-		tanque.draw(projectionviewMatrix);
+		mTank.draw(projectionviewMatrix);
 
-
-		//glDisable(GL_CULL_FACE);
-
-
-		/*for(int i=0; i<decoracion.length; i++)
-			decoracion[i].draw(projectionviewMatrix);*/
-
-
-		/*float[] shadow=getShadowProjectionMatrix(1, 5, 1);
-		tanque.draw(shadow);
-		decoracion[0].draw(shadow);
-		decoracion[1].draw(shadow);*/
 
 		glUseProgram(programSimple);
 		glEnable(GL_BLEND);
-		triangulos.draw();
+		mTriangules.draw();
 		glDisable(GL_BLEND);
-		/**/
-
-
-
-
-		//monito.draw(getShadowProjectionMatrix(1, 10, 0));
 
 	}
 
-	private float[] getShadowProjectionMatrix(float x, float y, float z)
-	{
-		float[] shadow={y, -z, 0, 0, 0, 0, 0, 0, 0, -z, y, 0, 0, -1, 0, y};
 
-
-		//float[] shadow={-y, x, 0, 0, 0, 0, 0, 0, 0, z, -y, 0, 0, 1, 0, -y};
-
-
-		//float[] shadow={-y, 0, 0, 0, x, 0, z, 1, 0, 0, -y, 0, 0, 0, 0, -y};
-
-
-		float[] dv=new float[16];
-
-
-		multiplyMM(dv, 0, projectionviewMatrix, 0, shadow, 0);
-
-		return dv;
-
-		}
 
 	public boolean CanDrag(float normalizedX, float normalizedY)
 	{
-		int filax=-1, filay=-1;
+		int Row_x=-1, Row_y=-1;
 
-		if(normalizedX<=-0.8){								filax=1;}
-		else if(normalizedX>=0.8){							filax=3;}
-		else if(normalizedX>=-0.1 && normalizedX<=0.1)	{	filax=2;}
+		if(normalizedX<=-0.8){								Row_x=1;}
+		else if(normalizedX>=0.8){							Row_x=3;}
+		else if(normalizedX>=-0.1 && normalizedX<=0.1)	{	Row_x=2;}
 
-		if(normalizedY<=-0.8){								filay=3;}
-		else if(normalizedY>=0.8){							filay=1;}
-		else if(normalizedY>=-0.1 && normalizedY<=0.1)	{	filay=2;}
+		if(normalizedY<=-0.8){								Row_y=3;}
+		else if(normalizedY>=0.8){							Row_y=1;}
+		else if(normalizedY>=-0.1 && normalizedY<=0.1)	{	Row_y=2;}
 
-		if(filax!=-1 && filay!=-1)
+		if(Row_x!=-1 && Row_y!=-1)
 		{
-			switch (filax)
+			switch (Row_x)
 			{
 				case 1:
-					if(filay==2)//Izquierda
+					if(Row_y==2)//Left
 					{
 						return false;
-					}else if(filay==3)//Torreta Izquierda
+					}else if(Row_y==3)//Left Turret rotation
 					{
 						return false;
 					}
 					break;
 				case 2:
-					if (filay==1) //Adelante
+					if (Row_y==1) //Forward
 					{
 						return false;
-					}else if(filay==3)//Atras
+					}else if(Row_y==3)//Backyard
 					{
 						return false;
 					}
 					break;
 				case 3:
-					if (filay==2)//Derecha
+					if (Row_y==2)//Right
 					{
 						return false;
-					} else if(filay==3)//Torreta Derecha
+					} else if(Row_y==3)//Right Turret rotation
 					{
 						return false;
 					}
@@ -440,53 +381,52 @@ public class OpenGLRenderer implements Renderer
 	{
 		if (LoggerConfig.ON)
 		{
+			float tank_rotation=10f, Tank_steps=0.25f;
+			int row_x=-1, row_y=-1;
 
-			float rotar_tanque=10f, pasos_tanque=0.25f;
-			int filax=-1, filay=-1;
 
+			if(normalizedX<=-0.8){								row_x=1;}
+			else if(normalizedX>=0.8){							row_x=3;}
+			else if(normalizedX>=-0.1 && normalizedX<=0.1)	{	row_x=2;}
 
-			if(normalizedX<=-0.8){								filax=1;}
-			else if(normalizedX>=0.8){							filax=3;}
-			else if(normalizedX>=-0.1 && normalizedX<=0.1)	{	filax=2;}
+			if(normalizedY<=-0.8){								row_y=3;}
+			else if(normalizedY>=0.8){							row_y=1;}
+			else if(normalizedY>=-0.1 && normalizedY<=0.1)	{	row_y=2;}
 
-			if(normalizedY<=-0.8){								filay=3;}
-			else if(normalizedY>=0.8){							filay=1;}
-			else if(normalizedY>=-0.1 && normalizedY<=0.1)	{	filay=2;}
-
-			if(filax!=-1 && filay!=-1)
+			if(row_x!=-1 && row_y!=-1)
 			{
-				switch (filax)
+				switch (row_x)
 				{
 					case 1:
-						if(filay==2)//Izquierda
+						if(row_y==2)//Left rotation
 						{
-							tanque.rotar(rotar_tanque);
-							rotarCamara(rotar_tanque, 0);
-						}else if(filay==3)//Torreta Izquierda
+							mTank.rotate(tank_rotation);
+							CamaraRotation(tank_rotation, 0);
+						}else if(row_y==3)//Left turret rotation
 						{
-							tanque.rotarTorreta(rotar_tanque);
+							mTank.rotateTurret(tank_rotation);
 						}
 						break;
 					case 2:
-						if (filay==1) //Adelante
+						if (row_y==1) //Forward
 						{
-							tanque.mover(pasos_tanque);
-							MirarTanque();
-						}else if(filay==3)//Atras
+							mTank.move(Tank_steps);
+							LookAtTank();
+						}else if(row_y==3)//Backyard
 						{
-							tanque.mover(-pasos_tanque);
-							MirarTanque();
+							mTank.move(-Tank_steps);
+							LookAtTank();
 						}
 
 						break;
 					case 3:
-						if (filay==2)//Derecha
+						if (row_y==2)//Right rotation
 						{
-							tanque.rotar(-rotar_tanque);
-							rotarCamara(-rotar_tanque, 0);
-						} else if(filay==3)//Torreta Derecha
+							mTank.rotate(-tank_rotation);
+							CamaraRotation(-tank_rotation, 0);
+						} else if(row_y==3)//Right turret rotation
 						{
-							tanque.rotarTorreta(-rotar_tanque);
+							mTank.rotateTurret(-tank_rotation);
 						}
 						break;
 				}
@@ -497,26 +437,25 @@ public class OpenGLRenderer implements Renderer
 	
 	public void handleTouchDrag(float normalizedX, float normalizedY)
 	{
-		rotarCamara(normalizedX*90f, -normalizedY*90f);
-		//monito.setRotacion(monito.getrX()-normalizedY*180f, monito.getrY()+ normalizedX*180f);
+		CamaraRotation(normalizedX*90f, -normalizedY*90f);
 	}
 
-	private void rotarCamara(float rX, float rY)
+	private void CamaraRotation(float rX, float rY)
 	{
-		camara.setRotacion(camara.getRx()+ rX, camara.getRy() + rY);
-		calcularProjectionViewMatrix();
+		mCamera.setCameraRotation(mCamera.getRotationX()+ rX, mCamera.getRotationY() + rY);
+		calculateProjectionViewMatrix();
 	}
 
-	private void MirarTanque()
+	private void LookAtTank()
 	{
-		camara.setPuntoAMirarTarget(tanque.getPositionX(), tanque.getPositionY(), tanque.getPositionZ());
-		calcularProjectionViewMatrix();
+		mCamera.setTarget(mTank.getPositionX(), mTank.getPositionY(), mTank.getPositionZ());
+		calculateProjectionViewMatrix();
 	}
 
 	public void setZoom(float zoom)
 	{
-		camara.setDistancia(zoom);
-		calcularProjectionViewMatrix();
+		mCamera.setDistance(zoom);
+		calculateProjectionViewMatrix();
 	}
 
 }

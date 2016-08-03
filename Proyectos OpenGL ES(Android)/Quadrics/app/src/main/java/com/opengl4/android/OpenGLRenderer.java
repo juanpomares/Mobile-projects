@@ -63,22 +63,22 @@ public class OpenGLRenderer implements Renderer
 
 	public void setEsfera(float radio, int n, int m)
 	{
-		quadricaVertex.Esfera(radio, n, m);
-		quadricaFragment.Esfera(radio, n, m);
-		qnormal.Esfera(radio, n, m);
+		quadricaVertex.Sphere(radio, n, m);
+		quadricaFragment.Sphere(radio, n, m);
+		qnormal.Sphere(radio, n, m);
 	}
 
 	public void setToroide(float radio1, float radio2, int n, int m)
 	{
-		quadricaVertex.Toroide(radio1, radio2, n, m);
-		quadricaFragment.Toroide(radio1, radio2, n, m);
-		qnormal.Toroide(radio1, radio2, n, m);
+		quadricaVertex.Toroid(radio1, radio2, n, m);
+		quadricaFragment.Toroid(radio1, radio2, n, m);
+		qnormal.Toroid(radio1, radio2, n, m);
 	}
 	public void setSuperCuadrica(float radio1, float radio2, float radio3, float s1, float s2, int n, int m)
 	{
-		quadricaVertex.SuperCuadratica(radio1, radio2, radio3, s1, s2, n, m);
-		quadricaFragment.SuperCuadratica(radio1, radio2, radio3, s1, s2, n, m);
-		qnormal.SuperCuadratica(radio1, radio2, radio3, s1, s2, n, m);
+		quadricaVertex.SuperCuadric(radio1, radio2, radio3, s1, s2, n, m);
+		quadricaFragment.SuperCuadric(radio1, radio2, radio3, s1, s2, n, m);
+		qnormal.SuperCuadric(radio1, radio2, radio3, s1, s2, n, m);
 	}
 	@Override
 	public void onSurfaceCreated(GL10 glUnused, EGLConfig config)

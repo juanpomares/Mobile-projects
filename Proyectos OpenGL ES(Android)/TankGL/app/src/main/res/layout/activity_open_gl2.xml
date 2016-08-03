@@ -9,4 +9,21 @@
     android:background="@color/black"
     tools:context="com.opengl10.android.OpenGLActivity" >
 
+
+    <android.opengl.GLSurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/GLView"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Juan Pomares Bernabeu"
+        android:id="@+id/textView"
+        android:layout_alignTop="@+id/GLView"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:padding="5dp" />
+
 </RelativeLayout>

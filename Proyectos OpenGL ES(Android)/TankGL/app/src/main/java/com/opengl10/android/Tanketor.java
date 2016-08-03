@@ -1,117 +1,113 @@
 package com.opengl10.android;
 
-import android.content.Context;
-
 import com.opengl10.android.util.Tobject;
 
 import static android.opengl.GLES20.GL_BLEND;
 import static android.opengl.GLES20.GL_CULL_FACE;
-import static android.opengl.GLES20.GL_DEPTH_TEST;
 import static android.opengl.GLES20.glDisable;
 import static android.opengl.GLES20.glEnable;
-import static android.opengl.GLES20.glUniform1i;
 
 /**
  * Created by mastermoviles on 7/1/16.
  */
 public class Tanketor
 {
-    private Tobject torreta, cuerpo, cubre;
-    private Tobject[] rueda;
+    private Tobject mTurret, mBody, mCover;
+    private Tobject[] mWheels;
 
-    private static int cant_frames=4;
-    private int actual=0;
+    private static int mFramesCount =4;
+    private int mActualFrame =0;
 
-    private float rotacionY=0;
-    private float positionX=0, positionY=0, positionZ=0;
+    private float mRotationY =0;
+    private float mPositionX =0, mPositionY =0, mPositionZ =0;
 
 
     public Tanketor(OpenGLRenderer ogl)
     {
-        cuerpo=new Tobject(ogl, R.raw.basetanque, R.drawable.tanquebasetextura);
-        torreta=new Tobject(ogl, R.raw.torretatanque, R.drawable.tanquetorretatextura);
-        rueda=new Tobject[cant_frames];
+        mBody =new Tobject(ogl, R.raw.tank_cover, R.drawable.tank_texture_base);
+        mTurret =new Tobject(ogl, R.raw.tank_turret, R.drawable.tank_texture_turret);
+        mWheels =new Tobject[mFramesCount];
 
-        rueda[0]=new Tobject(ogl, R.raw.ruedas0tanque, R.drawable.tanqueruedatextura);
-        rueda[1]=new Tobject(ogl, R.raw.ruedas1tanque, R.drawable.tanqueruedatextura);
-        rueda[2]=new Tobject(ogl, R.raw.ruedas2tanque, R.drawable.tanqueruedatextura);
-        rueda[3]=new Tobject(ogl, R.raw.ruedas3tanque, R.drawable.tanqueruedatextura);
+        mWheels[0]=new Tobject(ogl, R.raw.tank_wheel0, R.drawable.tank_texture_wheel);
+        mWheels[1]=new Tobject(ogl, R.raw.tank_wheel1, R.drawable.tank_texture_wheel);
+        mWheels[2]=new Tobject(ogl, R.raw.tank_wheel2, R.drawable.tank_texture_wheel);
+        mWheels[3]=new Tobject(ogl, R.raw.tank_wheel3, R.drawable.tank_texture_wheel);
 
 
-        cubre=new Tobject(ogl, R.raw.cubretanque, R.drawable.tanquecubreruedatextura);
+        mCover =new Tobject(ogl, R.raw.tank_covering, R.drawable.tank_texture_cover_wheel);
     }
 
-    public float getPositionX(){return positionX;}
-    public float getPositionY(){return positionY;}
-    public float getPositionZ(){return positionZ;}
+    public float getPositionX(){return mPositionX;}
+    public float getPositionY(){return mPositionY;}
+    public float getPositionZ(){return mPositionZ;}
 
 
     public void onSurfaceCreated()
     {
-        cuerpo.onSurfaceCreated();
-        torreta.onSurfaceCreated();
-        cubre.onSurfaceCreated();
-        for(int i=0; i<cant_frames; i++)
-            rueda[i].onSurfaceCreated();
+        mBody.onSurfaceCreated();
+        mTurret.onSurfaceCreated();
+        mCover.onSurfaceCreated();
+        for(int i = 0; i< mFramesCount; i++)
+            mWheels[i].onSurfaceCreated();
 
     }
 
-    public void rotarTorreta(float Ary)
+    public void rotateTurret(float Ary)
     {
-        torreta.setRotacion(torreta.getrX(), torreta.getrY() + Ary);
+        mTurret.setRotation(mTurret.getrX(), mTurret.getrY() + Ary);
     }
 
-    public void rotar(float Ary)
+    public void rotate(float Ary)
     {
-        cambiar_frameActual(Ary>0?1:-1);
-        rotacionY+=Ary;
+        changeActualFrame(Ary>0?1:-1);
+        mRotationY +=Ary;
 
-        while(rotacionY>360) rotacionY-=360;
-        while(rotacionY<0) rotacionY+=360;
+        while(mRotationY >360) mRotationY -=360;
+        while(mRotationY <0) mRotationY +=360;
 
-        cuerpo.setRotacion(cuerpo.getrX(), cuerpo.getrY()+Ary);
-        torreta.setRotacion(torreta.getrX(), torreta.getrY() + Ary);
-        cubre.setRotacion(cubre.getrX(), cubre.getrY() + Ary);
-        for(int i=0; i<cant_frames; i++)
-            rueda[i].setRotacion(rueda[i].getrX(), rueda[i].getrY()+Ary);
+        mBody.setRotation(mBody.getrX(), mBody.getrY()+Ary);
+        mTurret.setRotation(mTurret.getrX(), mTurret.getrY() + Ary);
+        mCover.setRotation(mCover.getrX(), mCover.getrY() + Ary);
+        for(int i = 0; i< mFramesCount; i++)
+            mWheels[i].setRotation(mWheels[i].getrX(), mWheels[i].getrY()+Ary);
     }
 
     public void draw(float[] projectionViewMatrix)
     {
-        cuerpo.draw(projectionViewMatrix);
-        torreta.draw(projectionViewMatrix);
-        rueda[actual].draw(projectionViewMatrix);
+        mBody.draw(projectionViewMatrix);
+        mTurret.draw(projectionViewMatrix);
+        mWheels[mActualFrame].draw(projectionViewMatrix);
 
 
         glDisable(GL_CULL_FACE);
         glEnable(GL_BLEND);
-        cubre.draw(projectionViewMatrix);
+        mCover.draw(projectionViewMatrix);
         glDisable(GL_BLEND);
     }
 
-    public void mover(float pasos)
+    public void move(float pasos)
     {
-        float radiansRY=(float)Math.toRadians(rotacionY);
+        float radiansRY=(float)Math.toRadians(mRotationY);
         float AZ=(float)(pasos*Math.cos(radiansRY));
         float AX=(float)(pasos*Math.sin(radiansRY));
 
-        positionX+=AX;
-        positionZ+=AZ;
+        mPositionX +=AX;
+        mPositionZ +=AZ;
 
 
-        cuerpo.move(AX, 0, AZ);
-        torreta.move(AX, 0, AZ);
-        cubre.move(AX, 0, AZ);
-        for(int i=0; i<cant_frames; i++)
-            rueda[i].move(AX, 0, AZ);
+        mBody.move(AX, 0, AZ);
+        mTurret.move(AX, 0, AZ);
+        mCover.move(AX, 0, AZ);
+        for(int i = 0; i< mFramesCount; i++)
+            mWheels[i].move(AX, 0, AZ);
 
-        cambiar_frameActual(pasos>0?1:-1);
+        changeActualFrame(pasos>0?1:-1);
     }
 
-    private void cambiar_frameActual(int dif)
+    private void changeActualFrame(int dif)
     {
-        actual+=dif;
-        if(actual<0) actual=cant_frames-1;
-        else if(actual==cant_frames) actual=0;
+        mActualFrame +=dif;
+        if(mActualFrame <0) mActualFrame = mFramesCount -1;
+        else if(mActualFrame == mFramesCount) mActualFrame =0;
     }
 }

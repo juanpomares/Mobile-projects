@@ -7,34 +7,37 @@
     tools:context="com.opengl4.android.MenuActivity">
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:text="Esfera"
+        android:text="Sphere"
         android:textSize="25dp"
+        android:padding="15dp"
         android:layout_marginTop="20dp"
-        android:onClick="crearCuadrica"
+        android:onClick="GoToQuadricActivity"
         android:id="@+id/buttonEsfera"
         android:layout_centerHorizontal="true"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:text="Toroide"
+        android:text="Toroid"
         android:layout_below="@+id/buttonEsfera"
         android:textSize="25dp"
+        android:padding="15dp"
         android:layout_marginTop="20dp"
-        android:onClick="crearCuadrica"
+        android:onClick="GoToQuadricActivity"
         android:id="@+id/buttonToroide"
         android:layout_centerHorizontal="true"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
-        android:text="Supercuádrica"
+        android:text="SuperCuadric"
         android:layout_below="@+id/buttonToroide"
         android:textSize="25dp"
+        android:padding="15dp"
         android:layout_marginTop="20dp"
-        android:onClick="crearCuadrica"
+        android:onClick="GoToQuadricActivity"
         android:id="@+id/buttonSuper"
         android:layout_centerHorizontal="true"/>
 

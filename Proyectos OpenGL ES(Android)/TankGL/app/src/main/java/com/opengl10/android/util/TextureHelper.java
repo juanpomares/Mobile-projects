@@ -19,7 +19,7 @@ public class TextureHelper {
 		
 		if (textureObjectIds[0] == 0) {
 			if (LoggerConfig.ON) {
-					Log.w(TAG, "No se pudo crear una textura de OpenGL.");
+					Log.w(TAG, "The OpenGL texture couldn't created.");
 			}
 			return 0;
 		}
@@ -30,7 +30,7 @@ public class TextureHelper {
 				context.getResources(), resourceId, options);
 		if (bitmap == null) {
 			if (LoggerConfig.ON) {
-				Log.w(TAG, "EL recurso con ID " + resourceId + " no se pudo decodificar.");
+				Log.w(TAG, "The resource whit ID '" + resourceId + "' couldn't be decoded.");
 			}
 			glDeleteTextures(1, textureObjectIds, 0);
 			return 0;

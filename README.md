@@ -1,3 +1,3 @@
-# Proyectos para dispositivos móviles
+# Mobile devices projects
 
-En este repositorio se encuentran algunos proyectos realizados por Juan Pomares Bernabeu en el Máster de Dispositivos Móviles de la Universidad de Alicante.
+In this repository, there are some projects created by Juan Pomares Bernabeu for the "University Master's Degree in Development of Software for Mobile Devices" of the Alicante university.

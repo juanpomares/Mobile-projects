@@ -39,9 +39,9 @@ public class Quadrics
     // Cálculo del tamaño de los datos (5 floats)
     private int STRIDE;
 
-    private int numVertices;
-    private float[] tablaVertices;
-    private LinkedList<Vertice> listaVertice;
+    private int mVertexCount;
+    private float[] mVertexArray;
+    private LinkedList<Vertex> mVertexList;
 
     private Color color;
 
@@ -78,9 +78,9 @@ public class Quadrics
 
     public Quadrics(OpenGLRenderer rend, int tipop, int textura)
     {
-        listaVertice=null;
+        mVertexList =null;
         vertexData=null;
-        tablaVertices=null;
+        mVertexArray =null;
 
 
         TexturaID=textura;
@@ -95,7 +95,7 @@ public class Quadrics
 
        STRIDE*=BYTES_PER_FLOAT;
 
-        numVertices=0;
+        mVertexCount =0;
         setColor(new Color());
     }
 
@@ -103,37 +103,37 @@ public class Quadrics
 
     public void setColor(Color c){ color=c;  }
 
-    public class Vertice
+    public class Vertex
     {
         float pX, pY, pZ;
         float nX, nY, nZ;
         float u,v;
 
-        public Vertice()
+        public Vertex()
         {
             pX=pY=pZ=0;
             nX=nY=nZ=0;
             u=v=0;
         }
 
-        private int sgn(float number)
+        private int sign(float number)
         {
             return number<0?-1:1;
         }
 
-        private float interp_lineal(float ini, float fin, float t)
+        private float LinearInterpolation(float ini, float fin, float t)
         {
             return ini*(1.0f-t)+fin*t;
         }
 
-        public Vertice crearVerticeEsfera(int n, int m, float r, float x, float y, float z, int i, int j)
+        public Vertex createSphereVertex(int n, int m, float r, float x, float y, float z, int i, int j)
         {
-            Vertice v = new Vertice();
+            Vertex v = new Vertex();
             float angulo_ini_m=(float)-Math.PI/2.0f, angulo_fin_m=(float)Math.PI/2.0f;
             float angulo_ini_n=(float)-Math.PI, angulo_fin_n=(float)Math.PI;
 
-            float radians_act_m= interp_lineal (angulo_ini_m, angulo_fin_m, j/(m*1.0f));
-            float radians_act_n= interp_lineal (angulo_ini_n, angulo_fin_n, i/(n*1.0f));
+            float radians_act_m= LinearInterpolation(angulo_ini_m, angulo_fin_m, j/(m*1.0f));
+            float radians_act_n= LinearInterpolation(angulo_ini_n, angulo_fin_n, i/(n*1.0f));
 
             v.pX = (float) (r*Math.cos(radians_act_n)*Math.cos(radians_act_m)+x);
             v.pY = (float) (r*Math.cos(radians_act_n)*Math.sin(radians_act_m)+y);
@@ -170,9 +170,9 @@ public class Quadrics
             return v;
         }
 
-        public Vertice crearVerticeToro(int n, int m, float r1, float r2, float x, float y, float z, int i, int j)
+        public Vertex CreateToroidVertex(int n, int m, float r1, float r2, float x, float y, float z, int i, int j)
         {
-            Vertice v = new Vertice();
+            Vertex v = new Vertex();
 
             float twopi= (float) (2.0f*Math.PI);
 
@@ -216,14 +216,14 @@ public class Quadrics
             return v;
         }
 
-        public Vertice crearVerticesSuperCuadratica(int n, int m, float r1, float r2, float r3, float s1, float s2, float x, float y, float z, int i, int j)
+        public Vertex CreateSuperCruadicVertex(int n, int m, float r1, float r2, float r3, float s1, float s2, float x, float y, float z, int i, int j)
         {
-            Vertice v = new Vertice();
+            Vertex v = new Vertex();
             float angulo_ini_m=(float)0.f, angulo_fin_m=(float)Math.PI*2;
             float angulo_ini_n=(float)0.f, angulo_fin_n=(float)Math.PI;
 
-            float radians_act_m= interp_lineal (angulo_ini_m, angulo_fin_m, j/(m*1.0f));
-            float radians_act_n= interp_lineal (angulo_ini_n, angulo_fin_n, i/(n*1.0f));
+            float radians_act_m= LinearInterpolation(angulo_ini_m, angulo_fin_m, j/(m*1.0f));
+            float radians_act_n= LinearInterpolation(angulo_ini_n, angulo_fin_n, i/(n*1.0f));
 
             float cos_v_dv = (float) Math.cos(radians_act_n);
             float cos_u_du = (float) Math.cos(radians_act_m);
@@ -231,16 +231,16 @@ public class Quadrics
             float sin_v_dv = (float) Math.sin(radians_act_n);
             float sin_u_du = (float) Math.sin(radians_act_m);
 
-            v.pX= (float) (r1*sgn(cos_v_dv)*sgn(sin_u_du)*Math.pow(Math.abs(cos_v_dv),s1)*Math.pow(Math.abs(sin_u_du),s2));
-            v.pY= (float) (r2*sgn(sin_v_dv)*sgn(sin_u_du)*Math.pow(Math.abs(sin_v_dv), s1)*Math.pow(Math.abs(sin_u_du),s2));
-            v.pZ= (float) (r3*sgn(cos_u_du)*Math.pow(Math.abs(cos_u_du), s2));
+            v.pX= (float) (r1* sign(cos_v_dv)* sign(sin_u_du)*Math.pow(Math.abs(cos_v_dv),s1)*Math.pow(Math.abs(sin_u_du),s2));
+            v.pY= (float) (r2* sign(sin_v_dv)* sign(sin_u_du)*Math.pow(Math.abs(sin_v_dv), s1)*Math.pow(Math.abs(sin_u_du),s2));
+            v.pZ= (float) (r3* sign(cos_u_du)*Math.pow(Math.abs(cos_u_du), s2));
 
-            float dx_du= (float) (r1*sgn(cos_v_dv)*cos_u_du*Math.pow(Math.abs(cos_v_dv), s1)*Math.pow(Math.abs(sin_u_du), s1 - 1));
-            float dy_du= (float) (r2*sgn(sin_v_dv)*cos_u_du*Math.pow(Math.abs(sin_v_dv), s1)*Math.pow(Math.abs(sin_u_du), s1 - 1));
+            float dx_du= (float) (r1* sign(cos_v_dv)*cos_u_du*Math.pow(Math.abs(cos_v_dv), s1)*Math.pow(Math.abs(sin_u_du), s1 - 1));
+            float dy_du= (float) (r2* sign(sin_v_dv)*cos_u_du*Math.pow(Math.abs(sin_v_dv), s1)*Math.pow(Math.abs(sin_u_du), s1 - 1));
             float dz_du= (float) (-r3*sin_u_du*Math.pow(Math.abs(cos_u_du), s1 - 1));
 
-            float dx_dv= (float) (-r1*sgn(sin_u_du)*Math.pow(Math.abs(sin_u_du), s2)*sin_v_dv*Math.pow(Math.abs(cos_v_dv), s2 - 1));
-            float dy_dv= (float) (r2*sgn(sin_u_du)*Math.pow(Math.abs(sin_u_du), s2)*cos_v_dv*Math.pow(Math.abs(sin_v_dv), s2 - 1));
+            float dx_dv= (float) (-r1* sign(sin_u_du)*Math.pow(Math.abs(sin_u_du), s2)*sin_v_dv*Math.pow(Math.abs(cos_v_dv), s2 - 1));
+            float dy_dv= (float) (r2* sign(sin_u_du)*Math.pow(Math.abs(sin_u_du), s2)*cos_v_dv*Math.pow(Math.abs(sin_v_dv), s2 - 1));
 
             float[] vector_normal=new float[3];
 
@@ -276,69 +276,69 @@ public class Quadrics
         }
     }
 
-    public void AddPointLista(Vertice vertex)
+    public void AddPointToList(Vertex vertex)
     {
-        listaVertice.add(vertex);
+        mVertexList.add(vertex);
         if(isObjectNormal())
         {
             float altura=0.06f;
-            Vertice normal=new Vertice();
+            Vertex normal=new Vertex();
             normal.pX=vertex.pX+vertex.nX*altura;
             normal.pY=vertex.pY+vertex.nY*altura;
             normal.pZ=vertex.pZ+vertex.nZ*altura;
 
-            listaVertice.add(normal);
+            mVertexList.add(normal);
         }
     }
 
-    public void Toroide(float r1, float r2, int n, int m)
+    public void Toroid(float r1, float r2, int n, int m)
     {
-        Toroide(r1, r2, n, m, 0, 0, 0);
+        Toroid(r1, r2, n, m, 0, 0, 0);
     }
 
-    public void Toroide(float r1, float r2, int n, int m, float orig_x, float orig_y, float orig_z)
+    public void Toroid(float r1, float r2, int n, int m, float orig_x, float orig_y, float orig_z)
     {
-        numVertices = 0;
+        mVertexCount = 0;
         if (n < 3) n = 3;
         if (m < 3) m = 3;
 
-        if(listaVertice==null)
-            listaVertice = new LinkedList<Vertice>();
-        listaVertice.clear();
-        Vertice actual = new Vertice();
+        if(mVertexList ==null)
+            mVertexList = new LinkedList<Vertex>();
+        mVertexList.clear();
+        Vertex actual = new Vertex();
 
         for (int i = 0; i < m; i++)
         {
             for (int j = 0; j < n; j++)
             {
-                AddPointLista(actual.crearVerticeToro(n, m, r1, r2, orig_x, orig_y, orig_z, i, j));
-                AddPointLista(actual.crearVerticeToro(n, m, r1, r2, orig_x, orig_y, orig_z, i, j + 1));
-                AddPointLista(actual.crearVerticeToro(n, m, r1, r2, orig_x, orig_y, orig_z, i + 1, j + 1));
+                AddPointToList(actual.CreateToroidVertex(n, m, r1, r2, orig_x, orig_y, orig_z, i, j));
+                AddPointToList(actual.CreateToroidVertex(n, m, r1, r2, orig_x, orig_y, orig_z, i, j + 1));
+                AddPointToList(actual.CreateToroidVertex(n, m, r1, r2, orig_x, orig_y, orig_z, i + 1, j + 1));
 
-                AddPointLista(actual.crearVerticeToro(n, m, r1, r2, orig_x, orig_y, orig_z, i, j));
-                AddPointLista(actual.crearVerticeToro(n, m, r1, r2, orig_x, orig_y, orig_z, i + 1, j + 1));
-                AddPointLista(actual.crearVerticeToro(n, m, r1, r2, orig_x, orig_y, orig_z, i + 1, j));
+                AddPointToList(actual.CreateToroidVertex(n, m, r1, r2, orig_x, orig_y, orig_z, i, j));
+                AddPointToList(actual.CreateToroidVertex(n, m, r1, r2, orig_x, orig_y, orig_z, i + 1, j + 1));
+                AddPointToList(actual.CreateToroidVertex(n, m, r1, r2, orig_x, orig_y, orig_z, i + 1, j));
             }
         }
-        CrearTablaVertices();
+        CreateVertexArray();
     }
 
-    public void Esfera(float r, int n, int m)
+    public void Sphere(float r, int n, int m)
     {
-        Esfera(r, n, m, 0, 0, 0);
+        Sphere(r, n, m, 0, 0, 0);
     }
 
-    public void Esfera(float r, int n, int m, float orig_x, float orig_y, float orig_z)
+    public void Sphere(float r, int n, int m, float orig_x, float orig_y, float orig_z)
     {
-        numVertices=0;
+        mVertexCount =0;
 
         if(n<3) n=3;
         if(m<3) m=3;
 
-        if(listaVertice==null)
-            listaVertice = new LinkedList<Vertice>();
-        listaVertice.clear();
-        Vertice actual=new Vertice();
+        if(mVertexList ==null)
+            mVertexList = new LinkedList<Vertex>();
+        mVertexList.clear();
+        Vertex actual=new Vertex();
 
         for(int i=0; i<m; i++)
         {
@@ -346,44 +346,44 @@ public class Quadrics
             {
                 if(j!=n)
                 {
-                    AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i, j));
-                    AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i, j + 1));
-                    AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i + 1, j + 1));
+                    AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i, j));
+                    AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i, j + 1));
+                    AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i + 1, j + 1));
 
                     if(j!=0)
                     {
-                        AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i, j));
-                        AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i + 1, j + 1));
-                        AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i + 1, j));
+                        AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i, j));
+                        AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i + 1, j + 1));
+                        AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i + 1, j));
                     }
                 }else
                 {
-                    AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i, j));
-                    AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i, j + 1));
-                    AddPointLista(actual.crearVerticeEsfera(n, m, r, orig_x, orig_y, orig_z, i + 1, j));
+                    AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i, j));
+                    AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i, j + 1));
+                    AddPointToList(actual.createSphereVertex(n, m, r, orig_x, orig_y, orig_z, i + 1, j));
                 }
             }
         }
 
-        CrearTablaVertices();
+        CreateVertexArray();
     }
 
-    public void SuperCuadratica(float r1, float r2, float r3, float s1, float s2, int n, int m)
+    public void SuperCuadric(float r1, float r2, float r3, float s1, float s2, int n, int m)
     {
-        SuperCuadratica(r1, r2, r3, s1, s2, n, m, 0, 0, 0);
+        SuperCuadric(r1, r2, r3, s1, s2, n, m, 0, 0, 0);
     }
 
-    public void SuperCuadratica(float r1, float r2, float r3, float s1, float s2, int n, int m, float orig_x, float orig_y, float orig_z)
+    public void SuperCuadric(float r1, float r2, float r3, float s1, float s2, int n, int m, float orig_x, float orig_y, float orig_z)
     {
-        numVertices=0;
+        mVertexCount =0;
 
         if(n<3) n=3;
         if(m<3) m=3;
 
-        if(listaVertice==null)
-            listaVertice = new LinkedList<Vertice>();
-        listaVertice.clear();
-        Vertice actual=new Vertice();
+        if(mVertexList ==null)
+            mVertexList = new LinkedList<Vertex>();
+        mVertexList.clear();
+        Vertex actual=new Vertex();
 
         for(int i=0; i<m; i++)
         {
@@ -391,58 +391,58 @@ public class Quadrics
             {
                 if(j!=n)
                 {
-                    AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j));
-                    AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j + 1));
-                    AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j + 1));
+                    AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j));
+                    AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j + 1));
+                    AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j + 1));
 
                     if(j!=0)
                     {
-                        AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j));
-                        AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j + 1));
-                        AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j));
+                        AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j));
+                        AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j + 1));
+                        AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j));
                     }
                 } else
                 {
-                    AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j));
-                    AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j + 1));
-                    AddPointLista(actual.crearVerticesSuperCuadratica(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j));
+                    AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j));
+                    AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i, j + 1));
+                    AddPointToList(actual.CreateSuperCruadicVertex(n, m, r1, r2, r3, s1, s2, orig_x, orig_y, orig_z, i + 1, j));
                 }
             }
         }
-        CrearTablaVertices();
+        CreateVertexArray();
     }
 
-    private void CrearTablaVertices()
+    private void CreateVertexArray()
     {
-        if(tablaVertices!=null)
-            tablaVertices=null;
+        if(mVertexArray !=null)
+            mVertexArray =null;
 
-        tablaVertices = new float[(numVertices=this.listaVertice.size())*(POSITION_COMPONENT_COUNT+(isObjectNormal()==false?(NORMAL_COMPONENT_COUNT + TEXTURE_COMPONENT_COUNT) :0))];
+        mVertexArray = new float[(mVertexCount =this.mVertexList.size())*(POSITION_COMPONENT_COUNT+(isObjectNormal()==false?(NORMAL_COMPONENT_COUNT + TEXTURE_COMPONENT_COUNT) :0))];
         /*else
         {
-            tablaVertices=null;
-            tablaVertices = new float[(numVertices=this.listaVertice.size())*(POSITION_COMPONENT_COUNT+(normales==false?(NORMAL_COMPONENT_COUNT + TEXTURE_COMPONENT_COUNT) :0))];
+            mVertexArray=null;
+            mVertexArray = new float[(mVertexCount=this.mVertexList.size())*(POSITION_COMPONENT_COUNT+(normales==false?(NORMAL_COMPONENT_COUNT + TEXTURE_COMPONENT_COUNT) :0))];
         }*/
 
 
         int desplazamiento=0;
 
-        Vertice actual;
+        Vertex actual;
 
-        for (int i=0; i<numVertices; i++)
+        for (int i = 0; i< mVertexCount; i++)
         {
-            actual = listaVertice.get(i);
+            actual = mVertexList.get(i);
 
-            tablaVertices[desplazamiento++] = actual.pX;
-            tablaVertices[desplazamiento++] = actual.pY;
-            tablaVertices[desplazamiento++] = actual.pZ;
+            mVertexArray[desplazamiento++] = actual.pX;
+            mVertexArray[desplazamiento++] = actual.pY;
+            mVertexArray[desplazamiento++] = actual.pZ;
             if(!isObjectNormal())
             {
-                tablaVertices[desplazamiento++] = actual.nX;
-                tablaVertices[desplazamiento++] = actual.nY;
-                tablaVertices[desplazamiento++] = actual.nZ;
-                tablaVertices[desplazamiento++] = actual.u;
-                tablaVertices[desplazamiento++] = actual.v;
+                mVertexArray[desplazamiento++] = actual.nX;
+                mVertexArray[desplazamiento++] = actual.nY;
+                mVertexArray[desplazamiento++] = actual.nZ;
+                mVertexArray[desplazamiento++] = actual.u;
+                mVertexArray[desplazamiento++] = actual.v;
             }
         }
 
@@ -453,11 +453,11 @@ public class Quadrics
         }
 
         vertexData = ByteBuffer
-            .allocateDirect(tablaVertices.length * BYTES_PER_FLOAT)
+            .allocateDirect(mVertexArray.length * BYTES_PER_FLOAT)
             .order(ByteOrder.nativeOrder())
             .asFloatBuffer();
         vertexData.clear();
-        vertexData.put(tablaVertices);
+        vertexData.put(mVertexArray);
     }
 
     public void onSurfaceCreated(Context context)
@@ -523,10 +523,10 @@ public class Quadrics
             aNormalLocation = glGetAttribLocation(program, A_NORMAL);
             aTextureLocation = glGetAttribLocation(program, A_TEXTURE);
          }
-        cargarBufferShader();
+        loadBufferShader();
     }
 
-    private void cargarBufferShader()
+    private void loadBufferShader()
     {
         glEnableVertexAttribArray(aPositionLocation);
         // Asociando vértices con su attribute
@@ -554,7 +554,7 @@ public class Quadrics
             return;
 
         glUseProgram(program);
-        cargarBufferShader();
+        loadBufferShader();
 
         // Envía la matriz de proyección al shader
 
@@ -571,7 +571,7 @@ public class Quadrics
             glBindTexture(GL_TEXTURE_2D, texture);
             glUniform1f(uTextureUnitLocation, 0);
         }
-       //glDrawArrays(GL_TRIANGLES, 0, numVertices);
-       glDrawArrays(isObjectNormal() == true ? GL_LINES : GL_TRIANGLES, 0, numVertices);
+       //glDrawArrays(GL_TRIANGLES, 0, mVertexCount);
+       glDrawArrays(isObjectNormal() == true ? GL_LINES : GL_TRIANGLES, 0, mVertexCount);
     }
 }

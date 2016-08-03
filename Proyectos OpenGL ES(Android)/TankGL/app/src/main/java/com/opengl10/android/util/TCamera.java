@@ -1,8 +1,6 @@
 package com.opengl10.android.util;
 
 
-import android.util.Log;
-
 import static android.opengl.Matrix.*;
 
 /**
@@ -10,108 +8,108 @@ import static android.opengl.Matrix.*;
  */
 public class TCamera
 {
-    float[] viewmatrix=new float[16];
+    float[] mViewMatrix =new float[16];
 
-    float[] punto_a_mirar;
-    float[] situacion_camara;
-    float[] up_vector={0, 1, 0};
+    float[] mLookPoint;
+    float[] mPositionCamera;
+    float[] mUpVector ={0, 1, 0};
 
-    float distancia=5;
-    private float Rx=0, Ry=0;
-    private float MaxRy=-5, MinRy=-70;
+    float mDistance =5;
+    private float mRotationX =0, mRotationY =0;
+    private float mMaxRotationY =-5, mMinRotationY =-70;
 
 
 
     public TCamera()
     {
-        punto_a_mirar=new float[3];
-        situacion_camara=new float[3];
+        mLookPoint =new float[3];
+        mPositionCamera =new float[3];
 
         for(int i=0; i<3; i++)
         {
-            punto_a_mirar[i]=situacion_camara[i]=0;
+            mLookPoint[i]= mPositionCamera[i]=0;
         }
 
 
-        calcularPuntoDondeMirar();
+        calculateLookPoint();
         recalculateViewMatrix();
     }
 
     public float[] getViewmatrix()
     {
-        return viewmatrix;
+        return mViewMatrix;
     }
 
-    private void calcularPuntoDondeMirar()
+    private void calculateLookPoint()
     {
         // Calculate the camera position using the distance and angles
-        float radiansRX=(float)Math.toRadians(Rx);
-        float radiansRY=(float)Math.toRadians(Ry);
+        float radiansRX=(float)Math.toRadians(mRotationX);
+        float radiansRY=(float)Math.toRadians(mRotationY);
 
-        situacion_camara[0] =(float)( distancia * -Math.sin(radiansRX) * Math.cos(radiansRY));
-        situacion_camara[1] =(float)( distancia * -Math.sin(radiansRY));
-        situacion_camara[2] =(float)(-distancia * Math.cos(radiansRX) * Math.cos(radiansRY));
+        mPositionCamera[0] =(float)( mDistance * -Math.sin(radiansRX) * Math.cos(radiansRY));
+        mPositionCamera[1] =(float)( mDistance * -Math.sin(radiansRY));
+        mPositionCamera[2] =(float)(-mDistance * Math.cos(radiansRX) * Math.cos(radiansRY));
 
         for(int i=0; i<3; i++)
-            situacion_camara[i]+=punto_a_mirar[i];
+            mPositionCamera[i]+= mLookPoint[i];
 
         recalculateViewMatrix();
     }
 
-    public void setDistancia(float distance)
+    public void setDistance(float distance)
     {
-        distancia=Math.max(0.01f, distance);
-        calcularPuntoDondeMirar();
+        mDistance =Math.max(0.01f, distance);
+        calculateLookPoint();
     }
 
-    public float getRx(){return Rx;}
-    public float getRy(){return Ry;}
+    public float getRotationX(){return mRotationX;}
+    public float getRotationY(){return mRotationY;}
 
 
-    public void setRotacion(float rx, float ry)
+    public void setCameraRotation(float rx, float ry)
     {
         while(rx>360) rx-=360;
         while(rx<0) rx+=360;
-        this.Rx=rx;
+        this.mRotationX =rx;
 
-        this.Ry=Math.max(MinRy, Math.min(ry, MaxRy));
-        calcularPuntoDondeMirar();
+        this.mRotationY =Math.max(mMinRotationY, Math.min(ry, mMaxRotationY));
+        calculateLookPoint();
     }
 
 
 
-    public void setPuntoAMirarTarget(float x, float y, float z)
+    public void setTarget(float x, float y, float z)
     {
-        punto_a_mirar[0]=x;
-        punto_a_mirar[1]=y;
-        punto_a_mirar[2]=z;
+        mLookPoint[0]=x;
+        mLookPoint[1]=y;
+        mLookPoint[2]=z;
 
-        calcularPuntoDondeMirar();
+        calculateLookPoint();
     }
 
-    public void setPuntoAMirar(float x, float y, float z)
+    public void setLookPoint(float x, float y, float z)
     {
-        punto_a_mirar[0]=x;
-        punto_a_mirar[1]=y;
-        punto_a_mirar[2]=z;
+        mLookPoint[0]=x;
+        mLookPoint[1]=y;
+        mLookPoint[2]=z;
 
         recalculateViewMatrix();
     }
 
-    public void setPuntoDondeMirar(float x, float y, float z)
+    public void setCameraPosition(float x, float y, float z)
     {
-        situacion_camara[0]=x;
-        situacion_camara[1]=y;
-        situacion_camara[2]=z;
+        mPositionCamera[0]=x;
+        mPositionCamera[1]=y;
+        mPositionCamera[2]=z;
 
         recalculateViewMatrix();
     }
 
     public void setUpVector(float x, float y, float z)
     {
-        up_vector[0]=x;
-        up_vector[1]=y;
-        up_vector[2]=z;
+        mUpVector[0]=x;
+        mUpVector[1]=y;
+        mUpVector[2]=z;
 
         recalculateViewMatrix();
     }
@@ -121,10 +119,10 @@ public class TCamera
         float[] dif=new float[3];
 
         for(int i=0; i<3; i++)
-            dif[i]=situacion_camara[i] - punto_a_mirar[i];
+            dif[i]= mPositionCamera[i] - mLookPoint[i];
 
         float[] vz= normalize(dif);
-        float[] vx = normalize(crossProduct(up_vector, vz));
+        float[] vx = normalize(crossProduct(mUpVector, vz));
         // vy doesn't need to be normalized because it's a cross
         // product of 2 normalized vectors
         float[] vy = crossProduct(vz, vx);
@@ -152,11 +150,11 @@ public class TCamera
 
         for(int i=0; i<3; i++)
         {
-            inverseVieWMatrix[k++]=situacion_camara[i];
+            inverseVieWMatrix[k++]= mPositionCamera[i];
         }
         inverseVieWMatrix[k++]=1;
 
-        invertM(viewmatrix, 0, inverseVieWMatrix, 0);
+        invertM(mViewMatrix, 0, inverseVieWMatrix, 0);
 
         /*Matrix inverseViewMatrix =
                 new Matrix(new Vector4(vx, 0),
@@ -171,15 +169,15 @@ public class TCamera
     {
         float[] dv=new float[3];
 
-        float modulo=0;
+        float length=0;
         for(int i=0; i<3; i++)
-            modulo+=vector[i]*vector[i];
+            length+=vector[i]*vector[i];
 
-        modulo=(float)Math.sqrt(modulo);
+        length=(float)Math.sqrt(length);
 
 
         for(int i=0; i<3; i++)
-            dv[i]=vector[i]/modulo;
+            dv[i]=vector[i]/length;
 
         return dv;
     }

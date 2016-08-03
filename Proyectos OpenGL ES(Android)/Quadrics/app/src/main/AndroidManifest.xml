@@ -29,17 +29,17 @@
 
         <activity
             android:name=".SphereActivity"
-            android:label="Esfera" >
+            android:label="Sphere" >
         </activity>
 
         <activity
             android:name=".ToroideActivity"
-            android:label="Toroide" >
+            android:label="Toroid" >
         </activity>
 
         <activity
             android:name=".SuperCuadricActivity"
-            android:label="SuperCuadrica" >
+            android:label="SuperCuadric" >
         </activity>
     </application>
 

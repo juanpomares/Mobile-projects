@@ -11,7 +11,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Subdivisiones: "/>
+            android:text="Subdivisions: "/>
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Radio1: "/>
+            android:text="Radius1: "/>
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Radio2: "/>
+            android:text="Radius2: "/>
         <SeekBar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,14 +54,14 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Objeto"
+            android:text="Object"
             android:checked="true"
             android:id="@+id/cbObject"/>
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Normales"
+            android:text="Normals"
             android:checked="true"
             android:id="@+id/cbNormal"/>
 

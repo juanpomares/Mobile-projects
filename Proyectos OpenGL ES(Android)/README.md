@@ -1,7 +1,15 @@
-# Proyectos OpenGL ES(Android)
+# OpenGL ES Projects(Android)
 
-En este proyecto se han creado dos aplicaciones para Android usando OpenGL ES:
+Two Android applications has been developed  using OpenGL ES:
 
-* **TankGL:** En esta aplicación se visualiza un modelo de un taque. En la interfaz se ven varios botones, para mover el tanque y para directionar la torreta.
-Además se puede hacer zoom y girar la cámara a través de gestos en la pantalla.
-* **Quadrics:** En esta aplicación se pueden visualizar un toroide, un cuadrado y una supercuádrica. Estos objetos se crean usando fórmula matemáticas y según los parámteros que el usuario desee.
+ **[TankGL](/TankGL)**
+In this app a tank model is rendered. In the interface, there are some buttons to move or rotate the tank or the turret.
+In addition, the user can perform gestures on the screen to zoom or rotate the camera.
+
+![TankGL screenshots](/TankGL/screenshots/MainScreenshot.png)
+
+
+**[Quadrics](/Quadrics)** 
+In this app, sphere, toroid or supercuadric can be rendered. This objects are created using mathematicals equations according to user values.
+
+![Quadrics screenshots](/Quadrics/screenshots/MainScreenshot.png)

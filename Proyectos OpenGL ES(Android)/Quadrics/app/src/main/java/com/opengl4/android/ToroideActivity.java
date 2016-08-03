@@ -14,9 +14,9 @@ public class ToroideActivity extends OpenGLActivity
     private static int minMN=3, maxMN=20;
 
     private int subdivision;
-    private float radio, radio2;
+    private float mRadius, mRadius2;
 
-    private SeekBar spSubdivision, spradio, spradio2;
+    private SeekBar mSKSubdivision, mSKRadius, mSKRadius2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,32 +39,32 @@ public class ToroideActivity extends OpenGLActivity
             @Override
             public void run()
             {
-                renderer.setToroide(radio, radio2, subdivision, subdivision);
+                renderer.setToroide(mRadius, mRadius2, subdivision, subdivision);
             }
         });
     }
 
     private void obtener_spinners()
     {
-        spSubdivision=(SeekBar)findViewById(R.id.sbSubdivisions);
-        spSubdivision.setMax(maxMN-minMN+1);
+        mSKSubdivision =(SeekBar)findViewById(R.id.sbSubdivisions);
+        mSKSubdivision.setMax(maxMN-minMN+1);
 
-        spradio=(SeekBar)findViewById(R.id.sbRadio);
-        spradio.setMax(20);
-        spradio2=(SeekBar)findViewById(R.id.sbRadio2);
-        spradio2.setMax(20);
+        mSKRadius =(SeekBar)findViewById(R.id.sbRadio);
+        mSKRadius.setMax(20);
+        mSKRadius2 =(SeekBar)findViewById(R.id.sbRadio2);
+        mSKRadius2.setMax(20);
 
-        spSubdivision.setOnSeekBarChangeListener(this);
-        spradio.setOnSeekBarChangeListener(this);
-        spradio2.setOnSeekBarChangeListener(this);
+        mSKSubdivision.setOnSeekBarChangeListener(this);
+        mSKRadius.setOnSeekBarChangeListener(this);
+        mSKRadius2.setOnSeekBarChangeListener(this);
     }
 
     private void obtener_valores()
     {
-        subdivision=spSubdivision.getProgress()+minMN;
+        subdivision= mSKSubdivision.getProgress()+minMN;
         Log.d("obtener_valores", "Subdivision: "+subdivision);
 
-        radio=(spradio.getProgress())/100.f+0.05f;
-        radio2=(spradio2.getProgress())/100.f+0.05f;
+        mRadius =(mSKRadius.getProgress())/100.f+0.05f;
+        mRadius2 =(mSKRadius2.getProgress())/100.f+0.05f;
     }
 }

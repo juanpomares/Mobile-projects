@@ -67,7 +67,10 @@ public class OpenGLActivity extends Activity {
 
 		mScaleDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-		glSurfaceView = new GLSurfaceView(this);
+
+		setContentView(R.layout.activity_open_gl2);
+
+		glSurfaceView = (GLSurfaceView)findViewById(R.id.GLView);
         openGLRenderer = new OpenGLRenderer(this, ScaleInicial);
         final ActivityManager activityManager =
         		(ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
@@ -92,10 +95,10 @@ public class OpenGLActivity extends Activity {
         	// Asigna nuestro renderer.
         	glSurfaceView.setRenderer(openGLRenderer);
         	rendererSet = true;
-        	Toast.makeText(this, "OpenGL ES 2.0 soportado",
+        	Toast.makeText(this, "OpenGL ES 2.0 supported",
         			Toast.LENGTH_LONG).show();
         } else {
-        	Toast.makeText(this, "Este dispositivo no soporta OpenGL ES 2.0",
+        	Toast.makeText(this, "This device doesn't supports OpenGL ES 2.0",
         			Toast.LENGTH_LONG).show();
         	return;
         }
@@ -177,7 +180,6 @@ public class OpenGLActivity extends Activity {
         	  }
         	}
         });
-        setContentView(glSurfaceView);
     }
 
     @Override

@@ -4,7 +4,7 @@ package com.opengl10.android.util;
  * Depto. Ciencia de la Computacion e Inteligencia Artificial
  * Universidad de Alicante
  * 
- * Master Universitario en Desarrollo de Software para Dispositivos M�viles
+ * Master Universitario en Desarrollo de Software para Dispositivos Moviles
  */
 
 import java.io.EOFException;
@@ -19,16 +19,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
-/* Versi�n 2.5 de Resource3DSReader
-*  Changelog:
-*    Cambios desde la versi�n 2.0:
-*    	Lee grupos de suavizado
-*    Cambios desde la versi�n 1.5:
-*       Lee m�ltiples mallas del recurso 3DS
-*    Cambios desde la versi�n 1.0:
-*       Se a�ade el c�lculo de la normal y las coordenadas de texturas
-*       Cada v�rtice tiene 8 floats (x, y, z, A, B, C, u, v)
-*/
 
 public class Resource3DSReader {
 	private static final String TAG = "Resource3DSReader";
@@ -38,11 +28,11 @@ public class Resource3DSReader {
 	private static final int BYTES_PER_SHORT = 2;
 	private static final int TRIMESH_SIZE    = 8*3;
 	
-	// N�mero m�ximo de mallas de tri�ngulos a leer
+	// Numero maaximo de mallas de triangulos a leer
 	private static final int MAX_MESHES      = 500;
 	
 	// Identificadores de los trozos (chunks) del archivo que vamos a leer
-	// Descripci�n del formato en: http://es.wikipedia.org/wiki/.3ds
+	// Descripcion del formato en: http://es.wikipedia.org/wiki/.3ds
 	private static final int CHUNK_MAIN		= 0x4d4d;
 	private static final int CHUNK_OBJMESH	= 0x3d3d;
 	private static final int CHUNK_OBJBLOCK	= 0x4000;
@@ -66,11 +56,11 @@ public class Resource3DSReader {
 	float[]	uvBuffer;
 	int[]	smoothBuffer;
 	
-	// [Salida] Vectores (JNI) con la mallas de tri�ngulos resultante, y su n�mero de v�rtices 
+	// [Salida] Vectores (JNI) con la mallas de triangulos resultante, y su numero de vertices
 	public FloatBuffer[]	dataBuffer;
 	public int[]			numVertices;	
 	
-	// N�mero de mallas
+	// Numero de mallas
 	public int numMeshes;
 	
 	public Resource3DSReader() {
@@ -189,7 +179,7 @@ public class Resource3DSReader {
 			        case CHUNK_VERTLIST: 
 			        	numVer[numMeshes] = readUnsignedShort(inputStream);
 			        	//if (LoggerConfig.ON) {
-							//Log.w(TAG, "[A] N�mero de V�rtices: " + numVer[numMeshes]);
+							//Log.w(TAG, "[A] Numero de Vertices: " + numVer[numMeshes]);
 						//}
 			            inputStream.skip(numVer[numMeshes]*3*BYTES_PER_FLOAT);
 			            break;
@@ -206,7 +196,7 @@ public class Resource3DSReader {
 			        case CHUNK_MAPLIST:
 			        	numUv[numMeshes] = readUnsignedShort(inputStream);
 			        	//if (LoggerConfig.ON) {
-							//Log.w(TAG, "[A] N�mero de Uv: " + numUv[numMeshes]);
+							//Log.w(TAG, "[A] Numero de Uv: " + numUv[numMeshes]);
 						//}
 			            inputStream.skip(numUv[numMeshes]*2*BYTES_PER_FLOAT);
 			            break;
@@ -262,19 +252,19 @@ public class Resource3DSReader {
 					.order(ByteOrder.nativeOrder())
 					.asFloatBuffer();
 				
-		// Crea la malla de tri�ngulos
+		// Crea la malla de triangulos
 		for (i=0; i<numPol[nM]; i++) {
 					
-			// Para cada v�rtice
+			// Para cada vertice
 			for(j=0;j<3;j++) {
 				pos = polBuffer[i*3+j];
 						
-				// A�adimos (x, y, z)
+				// Añadimos (x, y, z)
 				dataBuffer[nM].put(i*24+j*8, vertexBuffer[pos*3]);
 				dataBuffer[nM].put(i*24+j*8+1, vertexBuffer[pos*3+1]);
 				dataBuffer[nM].put(i*24+j*8+2, vertexBuffer[pos*3+2]);
 						
-				// A�adimos las coordenadas de textura (u,v)
+				// Añadimos las coordenadas de textura (u,v)
 				if (numUv[nM]>0) {
 					dataBuffer[nM].put(24*i+j*8+6, uvBuffer[pos*2]);
 					dataBuffer[nM].put(24*i+j*8+7, uvBuffer[pos*2+1]);
@@ -283,7 +273,7 @@ public class Resource3DSReader {
 					dataBuffer[nM].put(24*i+j*8+7, 0.0f);
 				}
 			}
-			// Para cada tri�ngulo se calcula la normal N = va x vb
+			// Para cada triangulo se calcula la normal N = va x vb
 			for (j=0; j<3; j++) {
 				va[j] = dataBuffer[nM].get(i*24+8*2+j) - dataBuffer[nM].get(i*24+j);
 				vb[j] = dataBuffer[nM].get(i*24+8+j)   - dataBuffer[nM].get(i*24+j);
@@ -291,7 +281,7 @@ public class Resource3DSReader {
 			vector_cross(N, va, vb);
 			vector_normalize(N);
 					
-			// A�adimos las normal N(A, B, C)
+			// Añadimos las normal N(A, B, C)
 			for(j=0;j<3;j++) {
 				dataBuffer[nM].put(i*24+j*8+3, N[0]);
 				dataBuffer[nM].put(i*24+j*8+4, N[1]);
@@ -366,7 +356,7 @@ public class Resource3DSReader {
 			        	numVer[numMeshes] = readUnsignedShort(inputStream);
 				        	
 			            //if (LoggerConfig.ON) {
-							//Log.w(TAG, "[R] N�mero de V�rtices: " + numVer[numMeshes]);
+							//Log.w(TAG, "[R] Numero de Vertices: " + numVer[numMeshes]);
 						//}
 			            for (i=0; i<numVer[numMeshes]; i++)
 			            {
@@ -380,7 +370,7 @@ public class Resource3DSReader {
 			        	numPol[numMeshes] = readUnsignedShort(inputStream);
 			        			        	        	
 			        	//if (LoggerConfig.ON) {
-							//Log.w(TAG, "[R] N�mero de Pol�gonos: " + numPol[numMeshes]);
+							//Log.w(TAG, "[R] Numero de Poligonos: " + numPol[numMeshes]);
 						//}
 			        			        		            
 			        	for (i=0; i<numPol[numMeshes]; i++)
@@ -401,7 +391,7 @@ public class Resource3DSReader {
 			        	numUv[numMeshes] = readUnsignedShort(inputStream);
 			        
 			        	if (LoggerConfig.ON) {
-							Log.w(TAG, "[R] N�mero de uv's: " + numUv[numMeshes]);
+							Log.w(TAG, "[R] Numero de uv's: " + numUv[numMeshes]);
 						}
 			        				        	
 			        	for (i=0; i<numUv[numMeshes]; i++)
@@ -445,7 +435,7 @@ public class Resource3DSReader {
 		uvBuffer=null;
 		
 		if (LoggerConfig.ON) {
-			Log.w(TAG, "[R] Recurso 3DS le�do correctamente, con " + numMeshes + " malla(s).");
+			Log.w(TAG, "[R] Recurso 3DS leido correctamente, con " + numMeshes + " malla(s).");
 		}
 		return numMeshes;
 	}

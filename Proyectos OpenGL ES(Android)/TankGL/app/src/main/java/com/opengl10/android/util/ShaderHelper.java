@@ -19,7 +19,7 @@ public class ShaderHelper {
 		
 		if (shaderObjectId == 0) {
 			if (LoggerConfig.ON) {
-				Log.w(TAG, "No se pudeo crear un nuevo shader.");
+				Log.w(TAG, "The new shader couldn't be created.");
 			}
 			return 0;
 		}
@@ -31,14 +31,14 @@ public class ShaderHelper {
 		
 		if (LoggerConfig.ON) {
 			// Print the shader info log to the Android log output.
-			Log.v(TAG, "Resultado de la compilacion del codigo:" + "\n" + shaderCode + "\n:"
+			Log.v(TAG, "Result of compiling the code:" + "\n" + shaderCode + "\n:"
 			+ glGetShaderInfoLog(shaderObjectId));
 		}
 		if (compileStatus[0] == 0) {
-			// Si falla borramos el objeto shader.
+			// If fails, delete the shader objects.
 			glDeleteShader(shaderObjectId);
 			if (LoggerConfig.ON) {
-				Log.w(TAG, "La compilacion del shader ha fallado.");
+				Log.w(TAG, "The shader compilation failed :0");
 			}
 			return 0;
 		}
@@ -50,33 +50,33 @@ public class ShaderHelper {
 		final int programObjectId = glCreateProgram();
 		if (programObjectId == 0) {
 			if (LoggerConfig.ON) {
-				Log.w(TAG, "No se puede crear un nuevo programa");
+				Log.w(TAG, "A new program couldn't be created");
 			}
 			return 0;
 		}
-		// A�adimos los shaders
+		// Adding the shaders
 		glAttachShader(programObjectId, vertexShaderId);
 		glAttachShader(programObjectId, fragmentShaderId);
-		// Enlazamos los shaders
+		// Linking the shaders
 		glLinkProgram(programObjectId);
-		// Comprobamos el resultado
+		// Checking the result
 		final int[] linkStatus = new int[1];
 		glGetProgramiv(programObjectId, GL_LINK_STATUS, linkStatus, 0);
-		// A�adimos la traza al log
+		// Logging the results
 		if (LoggerConfig.ON) {
-			Log.v(TAG, "Resultado del enlace del programa:\n"
+			Log.v(TAG, "Program linking result:\n"
 					+ glGetProgramInfoLog(programObjectId));
 		}
-		// Comprobamos el resultados del enlace
+		// Checking linking results
 		if (linkStatus[0] == 0) {
-			// Si falla borra el objeto programa.
+			// If fails, delete the program object.
 			glDeleteProgram(programObjectId);
 			if (LoggerConfig.ON) {
-				Log.w(TAG, "Ha fallado el enlazado del programa.");
+				Log.w(TAG, "The program linkig failed.");
 			}
 			return 0;
 		}
-		// Todo correcto, devolvemos el identificador
+		// All was well, returning the identifier
 		return programObjectId;
 	}
 	
@@ -86,7 +86,7 @@ public class ShaderHelper {
 		final int[] validateStatus = new int[1];
 		glGetProgramiv(programObjectId, GL_VALIDATE_STATUS, validateStatus, 0);
 		
-		Log.v(TAG, "Resultado de la validaci�n del programa: " + validateStatus[0]
+		Log.v(TAG, "Program validation result: " + validateStatus[0]
 				+ "\nLog:" + glGetProgramInfoLog(programObjectId));
 		return validateStatus[0] != 0;
 	}
