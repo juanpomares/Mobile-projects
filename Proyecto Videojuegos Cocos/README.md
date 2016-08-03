@@ -1,11 +1,14 @@
-# Proyecto Videojuegos Cocos2dX
+# Cocos2dX videogame
 
-En este proyecto se ha creado un videojuego multiplataforma usando el motor de videojuegos Cocos2dx.
-Este proyecto ha sido realizado por:
+A multiplatform game developed using the Cocos2dx game engine.
+
+This project has been created by:
 * Jorge Hernández Párraga
 * Evarist Perez Esteve
 * Juan Pomares Bernabeu
 
-<a href="http://www.youtube.com/watch?feature=player_embedded&v=lB-3aDP0PmI
-" target="_blank"><img src="http://img.youtube.com/vi/lB-3aDP0PmI/0.jpg" 
-alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+
+![Back to the jump screenshots](/screenshots/MainScreenshot.png?raw=true)
+
+
+[<img src="/screenshots/YoutubeLink.png?raw=true">](https://www.youtube.com/watch?v=lB-3aDP0PmI)
