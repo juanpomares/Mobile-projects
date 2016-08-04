@@ -243,9 +243,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             super.run();
 
-            MessageApi.SendMessageResult result =PendingResultSend.await();
-            if (!result.getStatus().isSuccess())
-                Log.e("sendMessage", "ERROR: failed to send Message: " + result.getStatus());
+            if(PendingResultSend!=null)
+            {
+                MessageApi.SendMessageResult result = PendingResultSend.await();
+                if (!result.getStatus().isSuccess())
+                    Log.e("sendMessage", "ERROR: failed to send Message: " + result.getStatus());
+            }else
+                AddTextInterface("No smartwatch connected", Toast.LENGTH_LONG);
         }
     }
 
@@ -280,16 +284,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mApiClient.disconnect();
         }
     }
-    private void AddTextInterface(String txt, boolean toast)
+    private void AddTextInterface(final String txt, final int lenght)
     {
         Log.d("AddTextInterface", txt);
-        if(toast)
-            Toast.makeText(this, txt, Toast.LENGTH_SHORT).show();
+        if(lenght!=-1)
+        {
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run() { Toast.makeText(MainActivity.this, txt, lenght).show(); }
+            });
+        }
     }
 
     private void AddTextInterface(String txt)
     {
-        AddTextInterface(txt, false);
+        AddTextInterface(txt, -1);
     }
 
 
@@ -354,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             case PublicConstants.DISCONNECTION:
                 mConnectedWearable = 0;
-                AddTextInterface("SmartWatch disconnected!! :(", true);
+                AddTextInterface("SmartWatch disconnected!! :(", Toast.LENGTH_LONG);
                 connectedWear.setText("FALSE");
                 break;
 
@@ -364,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 connectedWear.setText("TRUE");
 
                 sendMessageSync("Okay", "jeje");
-                AddTextInterface("SmartWatch connected!! :)", true);
+                AddTextInterface("SmartWatch connected!! :)", Toast.LENGTH_LONG);
 
                 if(mReconnectWearable)
                     ReConnection();
@@ -439,5 +449,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnectionSuspended(int i) {AddTextInterface("Connection suspended");}
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {AddTextInterface("Connection failed");}
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+    {
+        AddTextInterface("Connection failed: "+connectionResult.toString(), Toast.LENGTH_LONG);
+    }
 }
