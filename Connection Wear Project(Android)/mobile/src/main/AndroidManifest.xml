@@ -12,7 +12,8 @@
         <meta-data android:name="juanpomares.tfm.matermoviles.connectionwear"
             android:resource="@xml/wearable_app_desc"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

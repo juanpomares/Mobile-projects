@@ -11,7 +11,7 @@ public class MyWearableListenerService extends WearableListenerService
     @Override
     public void onMessageReceived(MessageEvent messageEvent)
     {
-        Log.d("Listener", "MessageReceived");
+        Log.d("MyWearListenerService", "MessageReceived");
 
         if(messageEvent.getPath().contains(PublicConstants.STOP_ACTIVITY))
         {

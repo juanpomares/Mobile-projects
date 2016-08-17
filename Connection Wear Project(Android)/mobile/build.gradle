@@ -7,7 +7,7 @@ android {
         applicationId 'juanpomares.tfm.mastermoviles.connectionwear'
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 5
+        versionCode 6
         versionName "1.0"
 
         // Enabling multidex support.

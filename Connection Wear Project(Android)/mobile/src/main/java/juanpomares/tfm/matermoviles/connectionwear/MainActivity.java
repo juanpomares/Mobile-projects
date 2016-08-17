@@ -23,30 +23,27 @@ import com.google.android.gms.wearable.Wearable;
 
 
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MessageApi.MessageListener
 {
     public float mJoystickValues[]={0,0};
     public String mButtonPressed ="None";
-    public float mGyroscopeValues[]={0,0,0};
-    public String mActualView =null;
+    public float mOrientationValues[]={0,0,0};
+    public String mActualView ="";
     public int mConnectedWearable=-1;
     public boolean mSensorActivated=false;
-    private boolean mReconnectWearable=false;
+    //private boolean mReconnectWearable=false;
     private boolean WearableApiListener=false;
 
     private String mWearableID="";
-
     private GoogleApiClient mApiClient=null;
 
-    private TextView joystickvalues[];
-    private TextView orientationvalues[];
-    private TextView buttonpressed;
-    private TextView connectedWear;
-    private Spinner spin_views;
+    private TextView mJoystickTViews[];
+    private TextView mOrientationTViews[];
+    private TextView mButtonPressedTView;
+    private TextView mConnectedWearTView;
+    private Spinner mSpinnerViews;
 
 
 
@@ -58,43 +55,39 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         setContentView(R.layout.activity_main);
 
-        buttonpressed =(TextView)findViewById(R.id.PressedButton);
-        connectedWear=(TextView)findViewById(R.id.ConnectedWear);
+        mButtonPressedTView =(TextView)findViewById(R.id.PressedButton);
+        mConnectedWearTView =(TextView)findViewById(R.id.ConnectedWear);
 
-        orientationvalues =new TextView[3];
-        orientationvalues[0]=(TextView)findViewById(R.id.girX);
-        orientationvalues[1]=(TextView)findViewById(R.id.girY);
-        orientationvalues[2]=(TextView)findViewById(R.id.girZ);
+        mOrientationTViews =new TextView[3];
+        mOrientationTViews[0]=(TextView)findViewById(R.id.girX);
+        mOrientationTViews[1]=(TextView)findViewById(R.id.girY);
+        mOrientationTViews[2]=(TextView)findViewById(R.id.girZ);
 
-        joystickvalues=new TextView[2];
-        joystickvalues[0]=(TextView)findViewById(R.id.joy_posx);
-        joystickvalues[1]=(TextView)findViewById(R.id.joy_posy);
+        mJoystickTViews =new TextView[2];
+        mJoystickTViews[0]=(TextView)findViewById(R.id.joy_posx);
+        mJoystickTViews[1]=(TextView)findViewById(R.id.joy_posy);
 
-        spin_views =(Spinner)findViewById(R.id.spinner);
+        mSpinnerViews =(Spinner)findViewById(R.id.spinner);
 
-        spin_views.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSpinnerViews.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
                 if(view!=null && (view instanceof TextView))
                 {
-                    String ninterface = (((TextView) view).getText().toString());
+                    String newInterface = (((TextView) view).getText().toString());
 
-                    if(ninterface.contains("TextView"))
+                    if(newInterface.contains("TextView"))
                     {
-                        ninterface=((TextView) findViewById(R.id.etTexto)).getText().toString();
+                        newInterface=((TextView) findViewById(R.id.etTexto)).getText().toString();
                     }
-
-                    changeInterface(ninterface);
+                    changeInterface(newInterface);
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {}
         });
-
         RefreshValues();
     }
 
@@ -107,9 +100,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     {
         if(mActualView!=newinterface)
         {
+			mJoystickValues[0]=mJoystickValues[0]=0;
+			
             mActualView=newinterface;
 
-            sendMessageSync(PublicConstants.CHANGE_LAYOUT, newinterface);
+            sendMessageChecking(PublicConstants.CHANGE_LAYOUT, newinterface);
             if(newinterface.contains("Button"))
             {
                 findViewById(R.id.posicionjoystick).setVisibility(View.GONE);
@@ -166,25 +161,27 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     private void RefreshValues()
     {
-        buttonpressed.setText(mButtonPressed);
+        mButtonPressedTView.setText(mButtonPressed);
 
         for(int i=0; i<3; i++)
         {
-            String Val="X";
+            String Val="Yaw";
             switch(i)
             {
                 case 1:
-                    Val="Y";
+                    Val="Pitch";
                     break;
                 case 2:
-                    Val="Z";
+                    Val="Roll";
                     break;
             }
 
-            orientationvalues[i].setText(Val+": "+mGyroscopeValues[i] + "");
+            mOrientationTViews[i].setText(Val+": "+ mOrientationValues[i] + "");
         }
+
+
         for(int i=0; i<2; i++)
-            joystickvalues[i].setText(((i==0)?"X":"Y")+": "+mJoystickValues[i]+"");
+            mJoystickTViews[i].setText(((i==0)?"X":"Y")+": "+mJoystickValues[i]+"");
     }
 
     private void getMWearable()
@@ -201,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         protected String Path;
         protected ByteBuffer Buff;
         protected PendingResult<MessageApi.SendMessageResult> PendingResultSend;
-
 
         SendMessage_Thread(String pth, ByteBuffer bff)
         {
@@ -240,22 +236,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         {
             if (mWearableID == "")
                 getMWearable();
-
-            super.run();
-
-            if(PendingResultSend!=null)
+				
+			if (mConnectedWearable != 1 && !Path.equals(PublicConstants.START_ACTIVITY) && !Path.equals(PublicConstants.STOP_ACTIVITY))
             {
-                MessageApi.SendMessageResult result = PendingResultSend.await();
-                if (!result.getStatus().isSuccess())
-                    Log.e("sendMessage", "ERROR: failed to send Message: " + result.getStatus());
+                OpenWearableApp(null);
             }else
-                AddTextInterface("No smartwatch connected", Toast.LENGTH_LONG);
+            {
+				super.run();
+
+				if(PendingResultSend!=null)
+				{
+					MessageApi.SendMessageResult result = PendingResultSend.await();
+					if (!result.getStatus().isSuccess())
+						Log.e("sendMessage", "ERROR: failed to send Message: " + result.getStatus());
+				}else
+					AddTextInterface("No smartwatch connected", Toast.LENGTH_LONG);
+			}
         }
     }
 
 
-
-    private void sendMessageAsync( String path, String text ) {
+    private void sendMessageUnchecked(String path, String text )
+    {
         if (mConnectedWearable!=0 || path.equals(PublicConstants.START_ACTIVITY))
         {
             AddTextInterface("sendMessage P:"+path+" T:"+text);
@@ -263,14 +265,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         }
     }
 
-    private void sendMessageSync( String path, String text ) {
+    private void sendMessageChecking(String path, String text )
+    {
         if (mConnectedWearable!=0 || path.equals(PublicConstants.START_ACTIVITY))
         {
             AddTextInterface("sendMessage P:"+path+" T:"+text);
             new SendMessageThreadAwait(path, text).start();
         }
     }
-
 
     private void DisconnectWear()
     {
@@ -284,12 +286,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mApiClient.disconnect();
         }
     }
+
     private void AddTextInterface(final String txt, final int lenght)
     {
         Log.d("AddTextInterface", txt);
         if(lenght!=-1)
         {
-            runOnUiThread(new Runnable()
+            MainActivity.this.runOnUiThread(new Runnable()
             {
                 @Override
                 public void run() { Toast.makeText(MainActivity.this, txt, lenght).show(); }
@@ -302,19 +305,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         AddTextInterface(txt, -1);
     }
 
-
     private void ReConnection()
     {
-        if(mReconnectWearable)
-        {
+        /*if(mReconnectWearable)
+        {*/
             if (mSensorActivated)
-                sendMessageSync(PublicConstants.ACTIVE_SENSORS, "Orientation");
+                sendMessageUnchecked(PublicConstants.ACTIVE_SENSORS, "Orientation");
 
             if (mActualView != null)
-                sendMessageSync(PublicConstants.CHANGE_LAYOUT, mActualView);
+                sendMessageUnchecked(PublicConstants.CHANGE_LAYOUT, mActualView);
 
-            mReconnectWearable = false;
-        }
+        /*    mReconnectWearable = false;
+        }*/
     }
 
     @Override
@@ -336,19 +338,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 break;
 
             case PublicConstants.BUTTON_RELEASE:
-                AddTextInterface("Button Releasad: " + data);
+                AddTextInterface("Button Released: " + data);
                 if(mButtonPressed.equalsIgnoreCase(data))
                     mButtonPressed="None";
 
                 RefreshValues();
                 break;
 
-            case PublicConstants.GYROSCOPE_VALUES:
+            case PublicConstants.ORIENTATION_VALUES:
                 String[] _pieces=data.split("#");
 
                 if(_pieces.length>2)
                     for(int i=0; i<3; i++)
-                        mGyroscopeValues[i]=(float)Math.toDegrees(Float.parseFloat(_pieces[i]));
+                        mOrientationValues[i]=(float)Math.toDegrees(Float.parseFloat(_pieces[i]));
 
                 RefreshValues();
                 break;
@@ -363,22 +365,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 break;
 
             case PublicConstants.DISCONNECTION:
-                mConnectedWearable = 0;
+                mConnectedWearable = -1;
                 AddTextInterface("SmartWatch disconnected!! :(", Toast.LENGTH_LONG);
-                connectedWear.setText("FALSE");
+                mConnectedWearTView.setText("FALSE");
                 break;
 
             case PublicConstants.CONNECTION_WEAR:
-                mWearableID = messageEvent.getSourceNodeId();
-                mConnectedWearable = 1;
-                connectedWear.setText("TRUE");
+                if(mConnectedWearable!=1)
+                {
+					mWearableID = messageEvent.getSourceNodeId();
+					mConnectedWearable = 1;
+					mConnectedWearTView.setText("TRUE");
 
-                sendMessageSync("Okay", "jeje");
-                AddTextInterface("SmartWatch connected!! :)", Toast.LENGTH_LONG);
+					sendMessageChecking(PublicConstants.CONNECTION_WELL, "jeje ;)");
+					AddTextInterface("SmartWatch connected!! :)", Toast.LENGTH_LONG);
 
-                if(mReconnectWearable)
-                    ReConnection();
-
+					ReConnection();
+				}
                 break;
 
             default:
@@ -391,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     protected void onDestroy()
     {
         if(mConnectedWearable==1)
-            sendMessageAsync(PublicConstants.STOP_ACTIVITY, "");
+            sendMessageUnchecked(PublicConstants.STOP_ACTIVITY, "");
 
         DisconnectWear();
         super.onDestroy();
@@ -399,16 +402,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public void OpenWearableApp(View v)
     {
-        mReconnectWearable=true;
-        sendMessageSync(PublicConstants.START_ACTIVITY, "");
+        sendMessageChecking(PublicConstants.START_ACTIVITY, "");
     }
 
     public void CloseWearableApp(View v)
     {
-        sendMessageSync(PublicConstants.STOP_ACTIVITY, "");
-        mConnectedWearable=0;
-        mReconnectWearable=true;
-        connectedWear.setText("FALSE");
+        sendMessageChecking(PublicConstants.STOP_ACTIVITY, "");
+        mConnectedWearable=-1;
+        mConnectedWearTView.setText("FALSE");
     }
 
     public void ActiveSensor(View v)
@@ -416,11 +417,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if(!mSensorActivated)
         {
             mSensorActivated = true;
-            sendMessageSync(PublicConstants.ACTIVE_SENSORS, "");
+            sendMessageChecking(PublicConstants.ACTIVE_SENSORS, "");
 
             for(int i=0; i<3; i++)
-                orientationvalues[i].setVisibility(View.VISIBLE);
-
+                mOrientationTViews[i].setVisibility(View.VISIBLE);
         }
     }
 
@@ -428,10 +428,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     {
         if(mSensorActivated)
         {
+			mOrientationValues[0]=mOrientationValues[1]=mOrientationValues[2]=0;
             mSensorActivated = false;
-            sendMessageSync(PublicConstants.DEACTIVE_SENSORS, "");
+            
+			sendMessageChecking(PublicConstants.DEACTIVATE_SENSORS, "");
             for(int i=0; i<3; i++)
-                orientationvalues[i].setVisibility(View.GONE);
+                mOrientationTViews[i].setVisibility(View.GONE);
         }
     }
 
@@ -441,7 +443,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     {
         Wearable.MessageApi.addListener(mApiClient, this);
         WearableApiListener=true;
-        sendMessageSync(PublicConstants.START_ACTIVITY, "");
+        sendMessageChecking(PublicConstants.START_ACTIVITY, "");
         AddTextInterface("Sended START_ACTIVITY command");
     }
 

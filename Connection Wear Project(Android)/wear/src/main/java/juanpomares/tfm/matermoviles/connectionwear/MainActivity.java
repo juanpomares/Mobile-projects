@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -22,26 +23,31 @@ import com.google.android.gms.wearable.Wearable;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainActivity extends Activity implements ButtonListener, JoystickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, MessageApi.MessageListener
+public class MainActivity extends Activity implements ButtonListener, JoystickListener
 {
-    GoogleApiClient mApiClient;
+    private static final int MAX_MILLIS_BETWEEN_UPDATES =125;
 
-    Node mTelephone =null;
+    private GoogleApiClient mApiClient;
 
-    boolean mMustNotifyDestroy =true;
-    boolean mSensorsActived =false;
-    boolean mWearableMessageApi=false;
+    private Node mTelephone =null;
 
-    long MAX_MILIS_BETWEENUPDATES=125;
+    private boolean mMustNotifyDestroy =true, mSensorsActivated =false;
 
-    long last_joystick_send=0;
-    float mJoystickNX=0, mJoystickNY=0;
+    private long mLastPositionJoystickSend_Time =0;
+    private float mJoystickNX=0, mJoystickNY=0, mJoystickSendNX=0, mJoystickSendNY=0;
+    private Timer mTimer=null;
 
-    String AcutalView="None";
+    private String mActualView="None";
 
-    SensorManager mSensorManager;
-    SensorEventListener mOrientationListener;
+    private SensorManager mSensorManager;
+    private SensorEventListener mOrientationListener;
+
+    private GoogleApiClient.ConnectionCallbacks mConnectionCallbacks;
+    private GoogleApiClient.OnConnectionFailedListener mConnectionFailedListener;
+    private MessageApi.MessageListener mMessageListener;
 
 
     @Override
@@ -58,8 +64,8 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
 
         mOrientationListener=new SensorEventListener()
         {
-            float []mGravity;
-            float []mGeoMagentic;
+            float [] mGravityValues;
+            float [] mGeoMagneticValues;
             long mLastOrientationSent=0;
 
             float []R=new float[9];
@@ -71,43 +77,38 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                 switch(event.sensor.getType())
                 {
                     case Sensor.TYPE_ACCELEROMETER:
-                        mGravity=event.values;
+                        mGravityValues =event.values;
                         break;
 
                     case Sensor.TYPE_MAGNETIC_FIELD:
-                        mGeoMagentic=event.values;
+                        mGeoMagneticValues =event.values;
                         break;
                 }
 
-                if(System.currentTimeMillis()-mLastOrientationSent<MAX_MILIS_BETWEENUPDATES)
+                if(System.currentTimeMillis()-mLastOrientationSent< MAX_MILLIS_BETWEEN_UPDATES)
                     return;
 
-                if(mGeoMagentic!=null && mGravity!=null)
+                if(mGeoMagneticValues !=null && mGravityValues !=null)
                 {
-                    if(SensorManager.getRotationMatrix(R, null, mGravity, mGeoMagentic))
+                    if(SensorManager.getRotationMatrix(R, null, mGravityValues, mGeoMagneticValues))
                     {
                         SensorManager.getOrientation(R, orientation);
-                        sendMessageWithStart(PublicConstants.GYROSCOPE_VALUES, orientation[0] + "#" + orientation[1] + "#" + orientation[2]);
+                        sendMessageChecking(PublicConstants.ORIENTATION_VALUES, orientation[0] + "#" + orientation[1] + "#" + orientation[2]);
                         mLastOrientationSent=System.currentTimeMillis();
                     }
                 }
             }
 
             @Override
-            public void onAccuracyChanged(Sensor sensor, int i) {
-
-            }
+            public void onAccuracyChanged(Sensor sensor, int i) {}
         };
-
 
         if(AppSharedPreferences.getAppOpen(this))
         {
             Log.d("Error", "App opened yet!!");
         }else
             AppSharedPreferences.setAppOpen(this, true);
-
     }
-
 
     @Override
     protected void onResume() {
@@ -115,13 +116,13 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         initGoogleApiClient();
     }
 
-
     @Override
     protected void onStop()
     {
-
         super.onStop();
-        DeactiveSensors();
+
+        stopTimerTask();
+        DeactivateSensors();
         Log.d("onStop", "...");
 
         if(mApiClient.isConnected())
@@ -133,24 +134,28 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                 Log.d("onStop", "send disconnected wear");
             }
 
-
-            if (mWearableMessageApi)
+            if (mMessageListener!=null)
             {
-                Wearable.MessageApi.removeListener(mApiClient, MainActivity.this);
-                mWearableMessageApi = false;
+                Wearable.MessageApi.removeListener(mApiClient, mMessageListener);
+                mMessageListener = null;
             }
             mApiClient.disconnect();
         }
+        mTelephone=null;
         AppSharedPreferences.setAppOpen(this, false);
         this.finish();
     }
 
     private void initGoogleApiClient()
     {
+        createConnectionCallbacks();
+        createConnectionFailed();
+
+
         mApiClient = new GoogleApiClient.Builder( this )
                 .addApi( Wearable.API )
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(mConnectionCallbacks)
+                .addOnConnectionFailedListener(mConnectionFailedListener)
                 .build();
 
         mApiClient.connect();
@@ -162,58 +167,73 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         Log.d("onDestroy", "...");
     }
 
-    @Override
-    public void onConnected(Bundle bundle)
+    private void createConnectionCallbacks()
     {
-        //Get the node of the phone
-        PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
-        nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>()
+        mConnectionCallbacks=new GoogleApiClient.ConnectionCallbacks()
         {
             @Override
-            public void onResult(NodeApi.GetConnectedNodesResult result)
+            public void onConnected(Bundle bundle)
             {
-                List<Node> nodes=result.getNodes();
-
-                if(nodes.size()>0)
-                    mTelephone = nodes.get(0);
-
-                if (mTelephone == null)
+                //Get the node of the phone
+                PendingResult<NodeApi.GetConnectedNodesResult> nodes = Wearable.NodeApi.getConnectedNodes(mApiClient);
+                nodes.setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>()
                 {
-                    mMustNotifyDestroy=false;
-                    MainActivity.this.finish();
-                }
-                else
-                {
-                    mMustNotifyDestroy=true;
-                    sendMessageWithRun(PublicConstants.CONNECTION_WEAR, "");
-                }
+                    @Override
+                    public void onResult(NodeApi.GetConnectedNodesResult result)
+                    {
+                        List<Node> nodes=result.getNodes();
+
+                        if(nodes.size()>0)
+                            mTelephone = nodes.get(0);
+
+                        if (mTelephone == null)
+                        {
+                            mMustNotifyDestroy=false;
+                            MainActivity.this.finish();
+                        }
+                        else
+                        {
+                            mMustNotifyDestroy=true;
+                            sendMessageUnchecked(PublicConstants.CONNECTION_WEAR, "");
+                        }
+                    }
+                });
+
+                initMessageListener();
+                Wearable.MessageApi.addListener(mApiClient, mMessageListener);
             }
-        });
-        Wearable.MessageApi.addListener(mApiClient, this);
-        mWearableMessageApi=true;
+
+            @Override
+            public void onConnectionSuspended(int i) {Log.d("onConnectionSuspended", "error: "+i);}
+
+        };
     }
 
-    @Override
-    public void onConnectionSuspended(int i) {Log.d("onConnectionSuspended", "error: "+i);}
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult)
+    private void createConnectionFailed()
     {
-        Log.d("onConnectionFailed", "error: "+connectionResult.getErrorCode());
-    }
-
-    public void DeactiveSensors()
-    {
-        if(mSensorsActived)
+        mConnectionFailedListener=new GoogleApiClient.OnConnectionFailedListener()
         {
-            mSensorsActived = false;
+            @Override
+            public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+            {
+                Log.d("onConnectionFailed", "Error: "+connectionResult.getErrorCode());
+            }
+        };
+    }
+
+
+    public void DeactivateSensors()
+    {
+        if(mSensorsActivated)
+        {
+            mSensorsActivated = false;
             mSensorManager.unregisterListener(mOrientationListener);
         }
     }
 
     public void ActiveSensors()
     {
-        if(!mSensorsActived)
+        if(!mSensorsActivated)
         {
             List<Sensor> sensorsAcelerometer = mSensorManager.getSensorList(Sensor.TYPE_ACCELEROMETER);
             List<Sensor> sensorsMagnetic = mSensorManager.getSensorList(Sensor.TYPE_MAGNETIC_FIELD);
@@ -221,88 +241,113 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
             {
                 mSensorManager.registerListener(mOrientationListener, sensorsAcelerometer.get(0), SensorManager.SENSOR_DELAY_GAME);
                 mSensorManager.registerListener(mOrientationListener, sensorsMagnetic.get(0), SensorManager.SENSOR_DELAY_GAME);
-                mSensorsActived = true;
+                mSensorsActivated = true;
             }
         }
     }
 
-
-    @Override
-    public void onMessageReceived(MessageEvent messageEvent)
+    private void initMessageListener()
     {
-        String path = messageEvent.getPath();
-        byte[] data = messageEvent.getData();
-        String sData=new String(data);
-        Log.d("onMessageReceived", "P: " + path + " D: " + sData);
-
-        switch (path)
+        mMessageListener=new MessageApi.MessageListener()
         {
-            case PublicConstants.CHANGE_LAYOUT:
 
-                //Todo Change to UniqueStringsIDs
-                if(sData.contains("Button"))
+            @Override
+            public void onMessageReceived(MessageEvent messageEvent)
+            {
+                String path = messageEvent.getPath();
+                byte[] data = messageEvent.getData();
+                String sData=new String(data);
+                Log.d("onMessageReceived", "P: " + path + " D: " + sData);
+
+                switch (path)
                 {
-                    ViewType nvista;
+                    case PublicConstants.CHANGE_LAYOUT:
 
-                    if(sData.contains("Pad"))
-                        nvista= ViewType.VistaButtonPad;
-                    else if(sData.contains("Horizontal"))
-                        nvista= ViewType.VistaButtonHorizontal;
-                    else
-                        nvista= ViewType.VistaButtonVertical;
+                        if(mActualView==sData)
+                            return;
+
+                        if(mActualView.contains("Virtual"))//Actual view is Joystick virtual
+                        {
+                            stopTimerTask();
+                        }
+
+                        mActualView=sData;
+
+                        if(sData.contains("Button"))
+                        {
+                            ViewType nvista;
+
+                            if(sData.contains("Pad"))
+                                nvista= ViewType.PadButtonView;
+                            else if(sData.contains("Horizontal"))
+                                nvista= ViewType.HorizontalButtonView;
+                            else
+                                nvista= ViewType.VerticalButtonView;
 
 
 
-                    setContentView(new VistaButton(this, this, nvista, !sData.contains("without")));
-                }else if(sData.contains("Virtual"))//Joystick virtual
-                {
-                    setContentView(new VistaJoystick(this, this));
-                }else// vista con texto simple
-                {
-                    TextView tview=(TextView) findViewById(R.id.text);
-                    if(tview==null)
-                    {
-                        setContentView(R.layout.activity_main);
-                        tview=(TextView) findViewById(R.id.text);
-                    }
+                            setContentView(new ButtonView(MainActivity.this, MainActivity.this, nvista, !sData.contains("without")));
+                        }else if(sData.contains("Virtual"))//Joystick virtual
+                        {
+                            setContentView(new JoystickView(MainActivity.this, MainActivity.this));
+                            mTimer=new Timer();
+                            mTimer.scheduleAtFixedRate(new SendJoystickNewPosition_Task(), MAX_MILLIS_BETWEEN_UPDATES *4, MAX_MILLIS_BETWEEN_UPDATES *4);
 
-                    tview.setText(sData.length()>1?sData:"Connection established!!");
+                        }else// TextView
+                        {
+                            TextView tview=(TextView) findViewById(R.id.text);
+                            if(tview==null)
+                            {
+                                setContentView(R.layout.activity_main);
+                                tview=(TextView) findViewById(R.id.text);
+                            }
+
+                            tview.setText(sData.length()>1?sData:"Connection established!!");
+                        }
+                        break;
+
+                    case PublicConstants.ACTIVE_SENSORS:
+                        ActiveSensors();
+                        break;
+
+                    case PublicConstants.DEACTIVATE_SENSORS:
+                        DeactivateSensors();
+                        break;
+
+                    case PublicConstants.STOP_ACTIVITY:
+                        mMustNotifyDestroy =false;
+                        MainActivity.this.finish();
+                        break;
+
+                    case PublicConstants.START_ACTIVITY:
+                        mMustNotifyDestroy=true;
+                        sendMessageUnchecked(PublicConstants.CONNECTION_WEAR, "");
+                        break;
+
+                    case PublicConstants.CONNECTION_WELL:
+                        if(!mMustNotifyDestroy)
+                        {
+                            mMustNotifyDestroy = true;
+                            TextView tview = ((TextView) findViewById(R.id.text));
+                            if (tview == null)
+                            {
+                                setContentView(R.layout.activity_main);
+                                tview = (TextView) findViewById(R.id.text);
+                            }
+                            tview.setText("Connection established!!");
+                        }
+                        break;
+
+                    default:
+                        Log.d("onMessageReceived", "Default Message");
+                        break;
                 }
-                break;
+            }
 
-            case PublicConstants.ACTIVE_SENSORS:
-                ActiveSensors();
-                break;
-
-            case PublicConstants.DEACTIVE_SENSORS:
-                DeactiveSensors();
-                break;
-
-            case PublicConstants.STOP_ACTIVITY:
-                mMustNotifyDestroy =false;
-                this.finish();
-                break;
-
-            case PublicConstants.START_ACTIVITY:
-                mMustNotifyDestroy=true;
-                sendMessageWithRun(PublicConstants.CONNECTION_WEAR, "");
-                break;
-
-            case "Okay":
-                TextView aux=((TextView)findViewById(R.id.text));
-                if(aux!=null)
-                    aux.setText("Connection established!!");
-
-                break;
-
-            default:
-                Log.d("onMessageReceived", "Default Message");
-                break;
-        }
+        };
     }
 
-
-    public void sendMessageWithStart(String path, String buffer)
+    public void sendMessageChecking(String path, String buffer)
     {
         if(mTelephone !=null)
         {
@@ -310,7 +355,7 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         }
     }
 
-    public void sendMessageWithRun(String path, String buffer)
+    public void sendMessageUnchecked(String path, String buffer)
     {
         if(mTelephone !=null)
         {
@@ -318,38 +363,29 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         }
     }
 
-
-    public void sendMessageWithRun(String path, ByteBuffer buffer)
+    public void sendMessageUnchecked(String path, ByteBuffer buffer)
     {
         if(mTelephone !=null)
         {
             (new SendMessage_Thread(path, buffer)).run();
         }
     }
-    public void sendMessageWithStart(String path, ByteBuffer buffer)
+    public void sendMessageChecking(String path, ByteBuffer buffer)
     {
         if(mTelephone !=null)
         {
             (new SendMessage_Thread(path, buffer)).start();
         }
     }
-
 
     public void sendMessageWithCloseApp(String path, String buffer)
     {
         if(mTelephone !=null)
         {
-            sendMessageWithRun(path, buffer);
-
-            Log.d("sendwithClose", "llamado al send");
-            Wearable.MessageApi.removeListener(mApiClient, MainActivity.this);
-            mWearableMessageApi=false;
-
-            Log.d("sendwithClose", "llamando al disconnect");
+            sendMessageUnchecked(path, buffer);
+            Wearable.MessageApi.removeListener(mApiClient, mMessageListener);
             mApiClient.disconnect();
-
-            Log.d("sendwithClose", "llamado al disconnect");
-        }
+		}
     }
 
     private class SendMessage_Thread extends Thread
@@ -374,7 +410,6 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         public void run()
         {
             Log.d("MessageSend", "P: "+Path+" "+new String(Buff.array()));
-
             PendingResultSend=Wearable.MessageApi.sendMessage(mApiClient, mTelephone.getId(), Path, Buff.array());
         }
     }
@@ -386,7 +421,6 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         {
             super(pth, buffer);
         }
-
 
         public void run()
         {
@@ -401,13 +435,13 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
     @Override
     public void onButtonPress(ButtonName pressed)
     {
-        sendMessageWithStart(PublicConstants.BUTTON_PRESS, PublicConstants.BUTTONS_NAME[pressed.ordinal()]);
+        sendMessageChecking(PublicConstants.BUTTON_PRESS, PublicConstants.BUTTONS_NAME[pressed.ordinal()]);
     }
 
     @Override
-    public void onButtonHold(ButtonName released) {
-
-        sendMessageWithStart(PublicConstants.BUTTON_RELEASE, PublicConstants.BUTTONS_NAME[released.ordinal()]);
+    public void onButtonHold(ButtonName released)
+    {
+        sendMessageChecking(PublicConstants.BUTTON_RELEASE, PublicConstants.BUTTONS_NAME[released.ordinal()]);
     }
 
     @Override
@@ -416,15 +450,54 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         if(newX!=mJoystickNX && newY!=mJoystickNY)
         {
             mJoystickNX=newX;
-            mJoystickNY=newX;
+            mJoystickNY=newY;
         }else
             return;
 
-        if(newX+newY>0.1)
-            if(System.currentTimeMillis()-last_joystick_send<MAX_MILIS_BETWEENUPDATES*2)
-            {   /*Log.d("onPositionChange", "No envio info :)");*/ return;}
+        long actualTime=System.currentTimeMillis();
 
-        last_joystick_send=System.currentTimeMillis();
-        sendMessageWithStart(PublicConstants.JOYSTICK_VALUES, newX+"#"+newY);
+        if(Math.abs(newX)+Math.abs(newY)>0.1)
+            if(actualTime- mLastPositionJoystickSend_Time < MAX_MILLIS_BETWEEN_UPDATES *3) {   /*Log.d("onPositionChange", "No info sended :)");*/ return;}
+
+      sendJoystickPosition(actualTime);
+    }
+
+    private void sendJoystickPosition(long time)
+    {
+        mLastPositionJoystickSend_Time =time;
+        sendMessageUnchecked(PublicConstants.JOYSTICK_VALUES, mJoystickNX+"#"+mJoystickNY);
+        mJoystickSendNX=mJoystickNX; mJoystickSendNY=mJoystickNY;
+    }
+
+    private void stopTimerTask()
+    {
+        if(mTimer!=null)
+        {
+            mTimer.cancel();
+            mTimer.purge();
+            mTimer = null;
+        }
+    }
+
+    class SendJoystickNewPosition_Task extends TimerTask
+    {
+        public void run()
+        {
+            if (mTelephone==null)
+            {
+                this.cancel();
+                Log.d("SendJoystick", "cancelling task");
+            }else
+            {
+                if (mJoystickSendNX != mJoystickNX && mJoystickSendNY != mJoystickNY)
+                {
+                    long actualTime = System.currentTimeMillis();
+
+                    if (actualTime - mLastPositionJoystickSend_Time < MAX_MILLIS_BETWEEN_UPDATES * 4) {return; }
+
+                    sendJoystickPosition(actualTime);
+                }
+            }
+        }
     }
 }
