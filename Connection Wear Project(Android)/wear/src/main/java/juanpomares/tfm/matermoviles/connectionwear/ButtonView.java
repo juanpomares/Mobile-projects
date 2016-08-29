@@ -78,19 +78,30 @@ public class ButtonView extends View
         mWidth =this.getWidth();
         mHeight =this.getHeight();
 
-
         MidScreenWidth = mWidth /2.0f;
         MidScreenHeight = mHeight /2.0f;
 
-
         initializePaths();
+    }
+
+    private Paint CreatePaintWithAntialias()
+    {
+        Paint _paint=new Paint();
+        //Enabling antialias
+        _paint.setDither(true);                    // set the dither to true
+        _paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
+        _paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
+        _paint.setAntiAlias(true);                         // set anti alias so it smooths
+
+        return _paint;
+
     }
 
     @Override
     protected void onDraw(Canvas canvas)
     {
-        Paint _mainPaint = new Paint();
-        Paint _linesPaint = new Paint();
+        Paint _mainPaint = CreatePaintWithAntialias();
+        Paint _linesPaint = CreatePaintWithAntialias();
 
         int _backgroundColor= Color.LTGRAY;
         int _linesColor=Color.GRAY;

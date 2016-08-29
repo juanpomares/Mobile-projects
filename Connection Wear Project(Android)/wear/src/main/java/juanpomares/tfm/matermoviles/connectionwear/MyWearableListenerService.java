@@ -13,13 +13,13 @@ public class MyWearableListenerService extends WearableListenerService
     {
         Log.d("MyWearListenerService", "MessageReceived");
 
-        if(messageEvent.getPath().contains(PublicConstants.STOP_ACTIVITY))
+        if(messageEvent.getPath().equals(PublicConstants.STOP_ACTIVITY))
         {
             AppSharedPreferences.setAppOpen(getApplicationContext(), false);
             super.onMessageReceived(messageEvent);
         }else
         {
-            if (!AppSharedPreferences.getAppOpen(getApplicationContext()) || !messageEvent.getPath().contains(PublicConstants.STOP_ACTIVITY))
+            if (!AppSharedPreferences.getAppOpen(getApplicationContext()) && messageEvent.getPath().equals(PublicConstants.START_ACTIVITY))
             {
             /*if (messageEvent.getPath().contains(PublicConstants.START_ACTIVITY))
             {*/
@@ -28,7 +28,8 @@ public class MyWearableListenerService extends WearableListenerService
                 startActivity(intent);
                 //}
             } else
-                Log.d("Listener", "App Opened yet jeje");
+                super.onMessageReceived(messageEvent);
+                //Log.d("Listener", "App Opened yet jeje");
         }
     }
 }

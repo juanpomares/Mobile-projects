@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -32,7 +33,10 @@ public class JoystickView extends View
     private boolean mTouchingScreen =false;
 
     public JoystickView(Context context, JoystickListener _list) {
-        super(context); mJoystickListener =_list;
+        //super(new ContextThemeWrapper(context, R.style.MiAppTheme), null, R.style.MiAppTheme);
+
+        super(context);
+        mJoystickListener =_list;
     }
 
     private boolean collidesCircle(float ex, float ey)
@@ -75,11 +79,23 @@ public class JoystickView extends View
         mTouchingScreen =false;
     }
 
+    private Paint CreatePaintWithAntialias()
+    {
+        Paint _paint=new Paint();
+        //Enabling antialias
+        _paint.setDither(true);                    // set the dither to true
+        _paint.setStrokeJoin(Paint.Join.ROUND);    // set the join to round you want
+        _paint.setStrokeCap(Paint.Cap.ROUND);      // set the paint cap to round too
+        _paint.setAntiAlias(true);                         // set anti alias so it smooths
+
+        return _paint;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
 
-        Paint paint = new Paint();
-        Paint paint2=new Paint();
+        Paint paint = CreatePaintWithAntialias();
+        Paint paint2=CreatePaintWithAntialias();
 
         if(mTouchingScreen)
             paint.setColor(Color.GRAY);

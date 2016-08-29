@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="juanpomares.tfm.matermoviles.connectionwear.MainActivity"
-    tools:deviceIds="wear_round"
     android:background="@android:color/darker_gray">
 
     <TextView
@@ -14,4 +13,9 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:text="Loading..." />
+
+    <android.support.wearable.view.DismissOverlayView
+        android:id="@+id/dismiss_overlay"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
 </RelativeLayout>

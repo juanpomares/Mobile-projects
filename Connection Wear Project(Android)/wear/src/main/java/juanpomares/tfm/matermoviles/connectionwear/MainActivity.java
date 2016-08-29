@@ -7,7 +7,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -49,6 +52,9 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
     private GoogleApiClient.OnConnectionFailedListener mConnectionFailedListener;
     private MessageApi.MessageListener mMessageListener;
 
+
+    private DismissOverlayView mDismissOverlay=null;
+    private GestureDetector mDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -106,9 +112,33 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
         if(AppSharedPreferences.getAppOpen(this))
         {
             Log.d("Error", "App opened yet!!");
+            return;
         }else
             AppSharedPreferences.setAppOpen(this, true);
+
+
+        // Obtain the DismissOverlayView element
+        mDismissOverlay = (DismissOverlayView) findViewById(R.id.dismiss_overlay);
+        mDismissOverlay.setIntroText("Long Press to dismiss");
+        mDismissOverlay.showIntroIfNecessary();
+
+        // Configure a gesture detector
+        mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            public void onLongPress(MotionEvent ev) {
+                mDismissOverlay.show();
+            }
+        });
     }
+
+    // Capture long presses
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if(mActualView=="None")
+            return mDetector.onTouchEvent(ev) || super.onTouchEvent(ev);
+        else
+            return super.onTouchEvent(ev);
+    }
+
 
     @Override
     protected void onResume() {
@@ -271,6 +301,7 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                             stopTimerTask();
                         }
 
+
                         mActualView=sData;
 
                         if(sData.contains("Button"))
@@ -320,8 +351,11 @@ public class MainActivity extends Activity implements ButtonListener, JoystickLi
                         break;
 
                     case PublicConstants.START_ACTIVITY:
-                        mMustNotifyDestroy=true;
-                        sendMessageUnchecked(PublicConstants.CONNECTION_WEAR, "");
+                        if(!mMustNotifyDestroy)
+                        {
+                            mMustNotifyDestroy=true;
+                            sendMessageUnchecked(PublicConstants.CONNECTION_WEAR, "");
+                        }
                         break;
 
                     case PublicConstants.CONNECTION_WELL:

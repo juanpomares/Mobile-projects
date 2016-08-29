@@ -28,8 +28,9 @@
             android:name=".MyWearableListenerService">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" android:pathPrefix="/MyWearController-" />
-                <!--<action android:name="com.google.android.gms.wearable.BIND_LISTENER" /> Deprecated!! -->
+                <data android:scheme="wear" android:host="*" android:path="/MyWearController-Start_activity"/>
+                <data android:scheme="wear" android:host="*" android:path="/MyWearController-Stop_activity"/>
+                <!--<action android:name="com.google.android.gms.wearable.BIND_LISTENER" />-->
             </intent-filter>
         </service>
 
