@@ -30,7 +30,7 @@ public class LaunchBall : MonoBehaviour
 	private int launching=0;
 	private const int stepsLaunching=10;
 	private int recharging=0;
-	private const int stepsrecharging=20;
+	private const int stepsrecharging=15;
 
 	private string buttonpressed="";
 
