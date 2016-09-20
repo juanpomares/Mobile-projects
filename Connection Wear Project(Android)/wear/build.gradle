@@ -6,9 +6,10 @@ android {
     buildToolsVersion "24.0.0"
     defaultConfig {
         applicationId 'juanpomares.tfm.mastermoviles.connectionwear'
+                      'juanpomares.tfm.mastermoviles.connectionwear'
         minSdkVersion 21
         targetSdkVersion 24
-        versionCode 7
+        versionCode 8
         versionName "1.0"
     }
     buildTypes {
