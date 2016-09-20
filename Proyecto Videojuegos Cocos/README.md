@@ -1,4 +1,4 @@
-# Cocos2dX videogame
+# Cocos2DX Videogame
 
 A multiplatform game developed using the Cocos2dx game engine.
 
