@@ -4,8 +4,8 @@ A multiplatform game developed using the Cocos2dx game engine.
 
 This project has been created by:
 * Jorge Hernández Párraga
-* Evarist Perez Esteve
-* Juan Pomares Bernabeu
+* [Evarist Perez Esteve](https://github.com/EvaristPerez)
+* [Juan Pomares Bernabeu](https://github.com/juanpomares)
 
 
 ![Back to the jump screenshots](./screenshots/MainScreenshoot.png?raw=true)
