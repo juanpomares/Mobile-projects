@@ -25,7 +25,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Configúrate, Hijoputa"
+        android:text="Configúrate, caballero"
         android:id="@+id/inicio_servidor_TV_titulo"
         android:layout_alignParentTop="true"
         android:textColor="#00095c"

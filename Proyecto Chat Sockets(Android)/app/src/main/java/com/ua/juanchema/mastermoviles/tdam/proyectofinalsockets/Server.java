@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +23,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
+
+import androidx.appcompat.app.AlertDialog;
 
 /**
  * Created by Usuario on 23/11/2015.
@@ -59,7 +60,8 @@ public class Server extends ConversationClass
 
         //Para evitar que la pantalla se apague
         final PowerManager pm=(PowerManager)getSystemService(getApplicationContext().POWER_SERVICE);
-        this.wakelock=pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
+        this.wakelock=pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyApp::MyWakelockTag");//pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
         wakelock.acquire();
 
         //Obtenemos valores del intent

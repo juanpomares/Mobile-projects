@@ -48,7 +48,7 @@ public class Client extends ConversationClass
 
         //Para evitar que la pantalla se apague
         final PowerManager pm=(PowerManager)getSystemService(getApplicationContext().POWER_SERVICE);
-        this.wakelock=pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
+        this.wakelock=pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyApp::MyWakelockTag");//pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "etiqueta");
         wakelock.acquire();
 
         //Obtenemos valores del intent
